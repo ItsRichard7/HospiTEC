@@ -1,5 +1,9 @@
--- Creación de la base de datos hospitec
+-- Creación de la base de datos hospitec 
+-- (Primero ejecutar esta línea individualmente)
 CREATE DATABASE hospitec;
+
+-- Ahora seleccionar en PostgreSQL la base que acabamos de crear 
+-- y ejecutar el resto de comandos de aqui hacia abajo
 
 -- Tabla para almacenar roles de usuario
 DROP TABLE IF EXISTS rol_usuario;
@@ -120,7 +124,31 @@ CREATE TABLE tipo_equipo(
 DROP TABLE IF EXISTS equipo_medico;
 CREATE TABLE equipo_medico(
     placa VARCHAR(10) NOT NULL,    -- Placa del equipo médico
-    num_cama NUMERIC(4) NOT NULL,  -- Número de c
+    num_cama NUMERIC(4) NOT NULL,  -- Número de cama a la que está asignado
+    proveedor VARCHAR(30) NOT NULL,-- Proveedor del equipo médico
+    PRIMARY KEY(placa),            -- Definición de clave primaria
+    FOREIGN KEY(num_cama) REFERENCES cama(numero) -- Clave foránea que vincula num_cama con cama
+);
 
+-- Tabla para gestionar reservas de camas
+DROP TABLE IF EXISTS reservacion_cama;
+CREATE TABLE reservacion_cama(
+    id NUMERIC(1) NOT NULL,        -- Identificador de la reserva
+    user_ced NUMERIC(10) NOT NULL, -- Cédula del usuario
+    num_cama NUMERIC(4) NOT NULL,  -- Número de cama reservada
+    fecha_ingreso DATE NOT NULL,    -- Fecha de ingreso
+    fecha_salida DATE NOT NULL,     -- Fecha de salida
+    PRIMARY KEY(id),                -- Definición de clave primaria
+    FOREIGN KEY(user_ced) REFERENCES usuario(cedula), -- Clave foránea que vincula user_ced con usuario
+    FOREIGN KEY(num_cama) REFERENCES cama(numero)     -- Clave foránea que vincula num_cama con cama
+);
 
-
+-- Tabla para relacionar procedimientos médicos con reservas de camas
+DROP TABLE IF EXISTS procedimiento_reservacion;
+CREATE TABLE procedimiento_reservacion(
+    id_procedimiento NUMERIC(1) NOT NULL, -- ID del procedimiento médico
+    id_reservacion NUMERIC(1) NOT NULL,   -- ID de la reserva de cama
+    PRIMARY KEY(id_procedimiento, id_reservacion), -- Definición de clave primaria compuesta
+    FOREIGN KEY(id_procedimiento) REFERENCES procedimiento_medico(id), -- Clave foránea que vincula id_procedimiento con procedimiento_medico
+    FOREIGN KEY(id_reservacion) REFERENCES reservacion_cama(id)       -- Clave foránea que vincula id_reservacion con reservacion_cama
+);
