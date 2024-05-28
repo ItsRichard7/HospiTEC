@@ -1,12 +1,27 @@
 -- Creación de la base de datos hospitec 
 -- (Primero ejecutar esta línea individualmente)
-CREATE DATABASE hospitec;
+-- CREATE DATABASE hospitec;
 
 -- Ahora seleccionar en PostgreSQL la base que acabamos de crear 
 -- y ejecutar el resto de comandos de aqui hacia abajo
 
--- Tabla para almacenar roles de usuario
+-- Eliminar las tablas en caso de que ya estén creadas
+DROP TABLE IF EXISTS procedimiento_reservacion;
+DROP TABLE IF EXISTS reservacion_cama;
+DROP TABLE IF EXISTS equipo_medico;
+DROP TABLE IF EXISTS tipo_equipo;
+DROP TABLE IF EXISTS cama;
+DROP TABLE IF EXISTS salon;
+DROP TABLE IF EXISTS tipo_salon;
+DROP TABLE IF EXISTS historial_medico;
+DROP TABLE IF EXISTS procedimiento_medico;
+DROP TABLE IF EXISTS patologia;
+DROP TABLE IF EXISTS fecha_ingreso;
+DROP TABLE IF EXISTS telefono_usuario;
+DROP TABLE IF EXISTS usuario;
 DROP TABLE IF EXISTS rol_usuario;
+
+-- Tabla para almacenar roles de usuario
 CREATE TABLE rol_usuario(
     id NUMERIC(1) NOT NULL,         -- Identificador numérico del rol
     rol_nombre VARCHAR(15) NOT NULL, -- Nombre del rol
@@ -14,7 +29,6 @@ CREATE TABLE rol_usuario(
 );
 
 -- Tabla para almacenar información de usuarios
-DROP TABLE IF EXISTS usuario;
 CREATE TABLE usuario(
     cedula NUMERIC(10) NOT NULL,    -- Número de cédula del usuario
     rol_id NUMERIC(1) NOT NULL,     -- ID del rol del usuario
@@ -33,7 +47,6 @@ CREATE TABLE usuario(
 );
 
 -- Tabla para almacenar números de teléfono de usuarios
-DROP TABLE IF EXISTS telefono_usuario;
 CREATE TABLE telefono_usuario(
     telefono VARCHAR(10) NOT NULL,   -- Número de teléfono
     user_ced NUMERIC(10) NOT NULL,  -- Cédula del usuario
@@ -42,7 +55,6 @@ CREATE TABLE telefono_usuario(
 );
 
 -- Tabla para registrar fechas de ingreso de usuarios
-DROP TABLE IF EXISTS fecha_ingreso;
 CREATE TABLE fecha_ingreso(
     fecha DATE NOT NULL,            -- Fecha de ingreso
     user_ced NUMERIC(10) NOT NULL, -- Cédula del usuario
@@ -51,7 +63,6 @@ CREATE TABLE fecha_ingreso(
 );
 
 -- Tabla para almacenar información sobre patologías de usuarios
-DROP TABLE IF EXISTS patologia;
 CREATE TABLE patologia(
     nombre VARCHAR(50) NOT NULL,     -- Nombre de la patología
     tratamiento VARCHAR(300) NOT NULL, -- Tratamiento de la patología
@@ -61,16 +72,14 @@ CREATE TABLE patologia(
 );
 
 -- Tabla para almacenar tipos de procedimientos médicos
-DROP TABLE IF EXISTS procedimiento_medico;
 CREATE TABLE procedimiento_medico(
     id NUMERIC(1) NOT NULL,        -- Identificador del procedimiento
     nombre VARCHAR(20) NOT NULL,   -- Nombre del procedimiento
-    dias_recuperacion INT NOT NULL, -- Días de recuperación del procedimiento
+    dias_recuperacion INTEGER NOT NULL, -- Días de recuperación del procedimiento
     PRIMARY KEY(id)                -- Definición de clave primaria
 );
 
 -- Tabla para registrar historial médico de usuarios
-DROP TABLE IF EXISTS historial_medico;
 CREATE TABLE historial_medico(
     fecha DATE NOT NULL,           -- Fecha del procedimiento médico
     tratamiento VARCHAR(300) NOT NULL, -- Tratamiento médico
@@ -82,7 +91,6 @@ CREATE TABLE historial_medico(
 );
 
 -- Tabla para almacenar tipos de salones
-DROP TABLE IF EXISTS tipo_salon;
 CREATE TABLE tipo_salon(
     id numeric(1) NOT NULL,       -- Identificador del tipo de salón
     tipo varchar(20) NOT NULL,    -- Tipo de salón
@@ -90,7 +98,6 @@ CREATE TABLE tipo_salon(
 );
 
 -- Tabla para registrar información de los salones
-DROP TABLE IF EXISTS salon;
 CREATE TABLE salon(
     numero NUMERIC(2) NOT NULL,    -- Número de salón
     id_tipo NUMERIC(1) NOT NULL,  -- ID del tipo de salón
@@ -102,17 +109,15 @@ CREATE TABLE salon(
 );
 
 -- Tabla para registrar camas en los salones
-DROP TABLE IF EXISTS cama;
 CREATE TABLE cama(
     numero NUMERIC(4) NOT NULL,      -- Número de cama
     numero_salon NUMERIC(2) NOT NULL,-- Número de salón al que pertenece la cama
-    cuidados_intensivos BIT NOT NULL,-- Indicador de cuidados intensivos
+    cuidados_intensivos BOOLEAN NOT NULL,-- Indicador de cuidados intensivos
     PRIMARY KEY(numero),             -- Definición de clave primaria
     FOREIGN KEY(numero_salon) REFERENCES salon(numero) -- Clave foránea que vincula numero_salon con salon
 );
 
 -- Tabla para almacenar tipos de equipos médicos
-DROP TABLE IF EXISTS tipo_equipo;
 CREATE TABLE tipo_equipo(
     id NUMERIC(1) NOT NULL,        -- Identificador del tipo de equipo médico
     tipo VARCHAR(20) NOT NULL,     -- Tipo de equipo médico
@@ -121,7 +126,6 @@ CREATE TABLE tipo_equipo(
 );
 
 -- Tabla para registrar equipos médicos
-DROP TABLE IF EXISTS equipo_medico;
 CREATE TABLE equipo_medico(
     placa VARCHAR(10) NOT NULL,    -- Placa del equipo médico
     num_cama NUMERIC(4) NOT NULL,  -- Número de cama a la que está asignado
@@ -131,7 +135,6 @@ CREATE TABLE equipo_medico(
 );
 
 -- Tabla para gestionar reservas de camas
-DROP TABLE IF EXISTS reservacion_cama;
 CREATE TABLE reservacion_cama(
     id NUMERIC(1) NOT NULL,        -- Identificador de la reserva
     user_ced NUMERIC(10) NOT NULL, -- Cédula del usuario
@@ -144,7 +147,6 @@ CREATE TABLE reservacion_cama(
 );
 
 -- Tabla para relacionar procedimientos médicos con reservas de camas
-DROP TABLE IF EXISTS procedimiento_reservacion;
 CREATE TABLE procedimiento_reservacion(
     id_procedimiento NUMERIC(1) NOT NULL, -- ID del procedimiento médico
     id_reservacion NUMERIC(1) NOT NULL,   -- ID de la reserva de cama
