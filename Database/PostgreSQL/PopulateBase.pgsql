@@ -1,19 +1,24 @@
+-- Asegúrate de que la extensión pgcrypto esté habilitada para usar funciones criptográficas
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
+-- Insertar roles en la tabla 'rol_usuario'
 INSERT INTO rol_usuario (rol_nombre) VALUES
-        ('Administrador'),
-        ('Médico'),
-        ('Paciente');
+    ('Administrador'),
+    ('Médico'),
+    ('Paciente');
 
+-- Insertar usuarios en la tabla 'usuario' con contraseñas encriptadas
 INSERT INTO usuario (cedula, rol_id, contrasena, p_nombre, s_nombre, p_apellido, s_apellido, f_nacim, pais, provincia, distrito, domicilio) VALUES
-    (1234567890, 1, crypt('admin123', gen_salt('md5')), 'Carlos', 'Eduardo', 'Rodriguez', 'Segura', '2003-04-25', 'Costa Rica', 'San Jose', 'Central', 'Av 1, Calle 2, Casa 3'),
-    (1234567891, 1, crypt('admin123', gen_salt('md5')), 'Ricardo', 'Antonio', 'Borbón', 'Mena', '2002-06-11', 'Costa Rica', 'Cartago', 'Oriental', 'Av 4, Calle 5, Casa 10');
+    (1234567890, 1, '0192023a7bbd73250516f069df18b500', 'Carlos', 'Eduardo', 'Rodriguez', 'Segura', '2003-04-25', 'Costa Rica', 'San Jose', 'Central', 'Av 1, Calle 2, Casa 3'),
+    (1234567891, 1, '0192023a7bbd73250516f069df18b500', 'Ricardo', 'Antonio', 'Borbón', 'Mena', '2002-06-11', 'Costa Rica', 'Cartago', 'Oriental', 'Av 4, Calle 5, Casa 10');
 
+-- Insertar números de teléfono para los usuarios en la tabla 'telefono_usuario'
 INSERT INTO telefono_usuario(user_ced, telefono) VALUES
     (1234567890, '25415697'),
     (1234567891, '25648795'),
     (1234567891, '86954426');
 
+-- Insertar procedimientos médicos en la tabla 'procedimiento_medico'
 INSERT INTO procedimiento_medico (nombre, dias_recuperacion) VALUES
     ('Apendicectomía', 7),
     ('Biopsia de mama', 3),
@@ -24,12 +29,14 @@ INSERT INTO procedimiento_medico (nombre, dias_recuperacion) VALUES
     ('Mastectomía', 14),
     ('Amigdalectomía', 5);
 
+-- Insertar tipos de salas en la tabla 'tipo_salon'
 INSERT INTO tipo_salon (tipo) VALUES 
     ('Propósito General'),
     ('Medicina de Hombres'),
     ('Medicina de Mujeres'),
     ('Medicina de Niños');
 
+-- Insertar salas en la tabla 'salon'
 INSERT INTO salon (id_tipo, nombre, capacidad, piso) VALUES 
     (1, 'Sala de Propósito General 1', 10, 1),
     (1, 'Sala de Propósito General 2', 12, 1),
@@ -40,7 +47,7 @@ INSERT INTO salon (id_tipo, nombre, capacidad, piso) VALUES
     (4, 'Sala de Medicina de Niños 1', 6, 4),
     (4, 'Sala de Medicina de Niños 2', 8, 4);
 
--- Salón 1
+-- Insertar camas en la tabla 'cama' especificando si son para cuidados intensivos o no
 INSERT INTO cama (numero_salon, cuidados_intensivos) VALUES 
     (1, TRUE),
     (1, FALSE),
@@ -59,6 +66,7 @@ INSERT INTO cama (numero_salon, cuidados_intensivos) VALUES
     (8, TRUE),
     (8, FALSE);
 
+-- Insertar tipos de equipos médicos en la tabla 'tipo_equipo'
 INSERT INTO tipo_equipo (tipo, cant_default) VALUES 
     ('Luces Quirúrgicas', 2),
     ('Ultrasonidos', 1),
@@ -68,7 +76,7 @@ INSERT INTO tipo_equipo (tipo, cant_default) VALUES
     ('Respiradores Artificiales', 1),
     ('Electrocardiógrafos', 1);
 
--- Equipos médicos asignados a camas en el salón 1
+-- Insertar equipos médicos en la tabla 'equipo_medico'
 INSERT INTO equipo_medico (placa, id_tipo, num_cama, proveedor) VALUES 
     ('LUCQUI01', 1, 1, 'MedicalTech Inc.'),
     ('LUCQUI02', 1, 2, 'MedicalTech Inc.'),
