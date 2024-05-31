@@ -1,0 +1,26 @@
+[
+    {
+      "numeroCama": "101",
+      "equipoMedico": ["Monitor de signos vitales", "Ventilador mecánico"],
+      "salon": "A1",
+      "UCI": true
+    },
+    {
+      "numeroCama": "102",
+      "equipoMedico": ["Bombas de infusión", "Electrocardiógrafo"],
+      "salon": "A1",
+      "UCI": false
+    },
+    {
+      "numeroCama": "201",
+      "equipoMedico": ["Oxímetro de pulso", "Ventilador mecánico"],
+      "salon": "B2",
+      "UCI": true
+    },
+    {
+      "numeroCama": "202",
+      "equipoMedico": ["Silla de ruedas", "Monitor de signos vitales"],
+      "salon": "B2",
+      "UCI": false
+    }
+]

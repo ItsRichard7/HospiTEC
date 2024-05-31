@@ -1,0 +1,105 @@
+body {
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wrapper {
+  width: 420px;
+  background-color: rgba(0, 0, 0, 0.55); /* Color oscuro con opacidad del 55% */
+  border: 2px solid rgba(25, 255, 255, 0.2);
+  color: white;
+  border-radius: 10px;
+  padding: 30px 40px;
+  text-align: center;
+}
+
+.wrapper h1 {
+  font-size: 36px;
+}
+
+.wrapper h2 {
+  font-size: 18px;
+  margin-top: 5px;
+}
+
+.wrapper .input-box {
+  position: relative;
+  width: 100%;
+  height: 45px;
+  margin: 30px 0;
+}
+
+.input-box input {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  outline: none;
+  border: 2px solid rgb(255, 255, 255);
+  border-radius: 40px;
+  font-size: 16px;
+  color: white;
+  padding: 0 20px 0 45px;
+}
+
+.input-box input::placeholder {
+  color: white;
+}
+
+.input-box .icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: white;
+}
+.input-box textarea {
+  width: 100%;
+  height: 125px;
+  background: transparent;
+  outline: none;
+  border: 2px solid rgb(255, 255, 255);
+  border-radius: 10px; /* Ajusta el radio de borde según sea necesario */
+  font-size: 16px;
+  color: white;
+  padding: 10px; /* Ajusta el relleno según sea necesario */
+  resize: none; /* Evita que el usuario pueda cambiar el tamaño del textarea */
+}
+
+.input-box textarea::placeholder {
+  color: white;
+}
+
+.wrapper .error-message {
+  color: rgb(255, 0, 0);
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+button[type="submit"] {
+  width: 100%;
+  height: 45px;
+  background-color: white;
+  border: none;
+  outline: none;
+  border-radius: 40px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin-top: 80px;
+}
+
+.input-box label {
+  display: block;
+  text-align: left;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: white;
+}
