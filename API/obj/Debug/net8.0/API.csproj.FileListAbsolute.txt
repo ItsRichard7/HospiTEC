@@ -103,3 +103,12 @@ C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\obj\Debug\net8.0\refint\API.
 C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\obj\Debug\net8.0\API.pdb
 C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\obj\Debug\net8.0\API.genruntimeconfig.cache
 C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\obj\Debug\net8.0\ref\API.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\Amazon.Lambda.APIGatewayEvents.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\Amazon.Lambda.ApplicationLoadBalancerEvents.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\Amazon.Lambda.AspNetCoreServer.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\Amazon.Lambda.AspNetCoreServer.Hosting.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\Amazon.Lambda.Core.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\Amazon.Lambda.Logging.AspNetCore.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\Amazon.Lambda.RuntimeSupport.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\Amazon.Lambda.Serialization.SystemTextJson.dll

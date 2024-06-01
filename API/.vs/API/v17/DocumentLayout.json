@@ -3,12 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\maest\\Documents\\TEC\\github\\BD\\HospiTEC\\API\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{64F02193-7E51-4E71-9642-5D00B8B7FB5D}|API.csproj|c:\\users\\maest\\documents\\tec\\github\\bd\\hospitec\\api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{64F02193-7E51-4E71-9642-5D00B8B7FB5D}|API.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{64F02193-7E51-4E71-9642-5D00B8B7FB5D}|API.csproj|c:\\users\\maest\\documents\\tec\\github\\bd\\hospitec\\api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64F02193-7E51-4E71-9642-5D00B8B7FB5D}|API.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{64F02193-7E51-4E71-9642-5D00B8B7FB5D}|API.csproj|c:\\users\\maest\\documents\\tec\\github\\bd\\hospitec\\api\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{64F02193-7E51-4E71-9642-5D00B8B7FB5D}|API.csproj|solutionrelative:appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{64F02193-7E51-4E71-9642-5D00B8B7FB5D}|API.csproj|c:\\users\\maest\\documents\\tec\\github\\bd\\hospitec\\api\\controllers\\insertarusuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64F02193-7E51-4E71-9642-5D00B8B7FB5D}|API.csproj|solutionrelative:controllers\\insertarusuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{64F02193-7E51-4E71-9642-5D00B8B7FB5D}|API.csproj|c:\\users\\maest\\documents\\tec\\github\\bd\\hospitec\\api\\class\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64F02193-7E51-4E71-9642-5D00B8B7FB5D}|API.csproj|solutionrelative:class\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{64F02193-7E51-4E71-9642-5D00B8B7FB5D}|API.csproj|c:\\users\\maest\\documents\\tec\\github\\bd\\hospitec\\api\\models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64F02193-7E51-4E71-9642-5D00B8B7FB5D}|API.csproj|solutionrelative:models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{64F02193-7E51-4E71-9642-5D00B8B7FB5D}|API.csproj|c:\\users\\maest\\documents\\tec\\github\\bd\\hospitec\\api\\controllers\\salonescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64F02193-7E51-4E71-9642-5D00B8B7FB5D}|API.csproj|solutionrelative:controllers\\salonescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{64F02193-7E51-4E71-9642-5D00B8B7FB5D}|API.csproj|c:\\users\\maest\\documents\\tec\\github\\bd\\hospitec\\api\\class\\salon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{64F02193-7E51-4E71-9642-5D00B8B7FB5D}|API.csproj|solutionrelative:class\\salon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,32 +34,84 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\maest\\Documents\\TEC\\github\\BD\\HospiTEC\\API\\appsettings.json",
-              "RelativeDocumentMoniker": "appsettings.json",
-              "ToolTip": "C:\\Users\\maest\\Documents\\TEC\\github\\BD\\HospiTEC\\API\\appsettings.json",
-              "RelativeToolTip": "appsettings.json",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-05-31T16:09:30.747Z",
+              "DocumentIndex": 1,
+              "Title": "InsertarUsuario.cs",
+              "DocumentMoniker": "C:\\Users\\maest\\Documents\\TEC\\github\\BD\\HospiTEC\\API\\Controllers\\InsertarUsuario.cs",
+              "RelativeDocumentMoniker": "Controllers\\InsertarUsuario.cs",
+              "ToolTip": "C:\\Users\\maest\\Documents\\TEC\\github\\BD\\HospiTEC\\API\\Controllers\\InsertarUsuario.cs",
+              "RelativeToolTip": "Controllers\\InsertarUsuario.cs",
+              "ViewState": "AQIAACEAAAAAAAAAAAAqwC0AAABIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-01T20:57:17.842Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AppDbContext.cs",
-              "DocumentMoniker": "C:\\Users\\maest\\Documents\\TEC\\github\\BD\\HospiTEC\\API\\AppDbContext.cs",
-              "RelativeDocumentMoniker": "AppDbContext.cs",
-              "ToolTip": "C:\\Users\\maest\\Documents\\TEC\\github\\BD\\HospiTEC\\API\\AppDbContext.cs",
-              "RelativeToolTip": "AppDbContext.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABoAAAAoAAAA",
+              "DocumentIndex": 2,
+              "Title": "Usuario.cs",
+              "DocumentMoniker": "C:\\Users\\maest\\Documents\\TEC\\github\\BD\\HospiTEC\\API\\Class\\Usuario.cs",
+              "RelativeDocumentMoniker": "Class\\Usuario.cs",
+              "ToolTip": "C:\\Users\\maest\\Documents\\TEC\\github\\BD\\HospiTEC\\API\\Class\\Usuario.cs",
+              "RelativeToolTip": "Class\\Usuario.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-31T16:05:16.457Z",
+              "WhenOpened": "2024-06-01T20:56:33.904Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SalonesController.cs",
+              "DocumentMoniker": "C:\\Users\\maest\\Documents\\TEC\\github\\BD\\HospiTEC\\API\\Controllers\\SalonesController.cs",
+              "RelativeDocumentMoniker": "Controllers\\SalonesController.cs",
+              "ToolTip": "C:\\Users\\maest\\Documents\\TEC\\github\\BD\\HospiTEC\\API\\Controllers\\SalonesController.cs",
+              "RelativeToolTip": "Controllers\\SalonesController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-01T20:40:16.375Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Salon.cs",
+              "DocumentMoniker": "C:\\Users\\maest\\Documents\\TEC\\github\\BD\\HospiTEC\\API\\Class\\Salon.cs",
+              "RelativeDocumentMoniker": "Class\\Salon.cs",
+              "ToolTip": "C:\\Users\\maest\\Documents\\TEC\\github\\BD\\HospiTEC\\API\\Class\\Salon.cs",
+              "RelativeToolTip": "Class\\Salon.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-01T20:36:56.938Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\maest\\Documents\\TEC\\github\\BD\\HospiTEC\\API\\Models\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "Models\\AppDbContext.cs",
+              "ToolTip": "C:\\Users\\maest\\Documents\\TEC\\github\\BD\\HospiTEC\\API\\Models\\AppDbContext.cs",
+              "RelativeToolTip": "Models\\AppDbContext.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAhAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-01T20:36:16.815Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\maest\\Documents\\TEC\\github\\BD\\HospiTEC\\API\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\maest\\Documents\\TEC\\github\\BD\\HospiTEC\\API\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAhAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-01T03:03:52.165Z",
               "EditorCaption": ""
             }
           ]
