@@ -158,6 +158,24 @@ END;
 $$;
 -- Comando de Ejecucion: SELECT * FROM fn_obtener_camas();
 
+-- >>> Funcion para obtener el equipo medico con el que cuenta una cama <<<
+CREATE OR REPLACE FUNCTION fn_obtener_equipo_cama(
+    p_num_cama INTEGER
+)
+RETURNS TABLE(
+    equipo VARCHAR(20)
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT B.tipo
+    FROM equipo_medico AS a JOIN tipo_equipo AS b ON a.id_tipo = b.id
+    WHERE a.num_cama = p_num_cama;
+END;
+$$;
+-- Comado de Ejecucucion: SELECT * FROM fn_obtener_equipo_cama(1);
+
 -- >>> Procedimiento almacenado para agregar una cama <<<
 CREATE OR REPLACE PROCEDURE up_insertar_cama(
     p_numero_salon INTEGER,
