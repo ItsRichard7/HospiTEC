@@ -4,8 +4,8 @@
 |                                     |
 -------------------------------------*/
 
--- Procedimiento almacenado para obtener los salones 
-CREATE OR REPLACE FUNCTION up_obtener_salones()
+-- >>> Procedimiento almacenado para obtener los salones <<<
+CREATE OR REPLACE FUNCTION fn_obtener_salones()
 RETURNS TABLE (
     numero INTEGER,
     tipo VARCHAR(30),
@@ -21,8 +21,11 @@ BEGIN
     FROM salon AS A JOIN tipo_salon AS B ON A.id_tipo = B.id;
 END;
 $$;
+-- Comando de Ejecucion: SELECT * FROM fn_obtener_salones();
 
--- Comando de Ejecucion: SELECT * FROM up_obtener_salones();
+
+
+
 
 
 
