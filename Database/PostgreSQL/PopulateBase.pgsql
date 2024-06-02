@@ -115,10 +115,10 @@ SELECT * FROM procedimiento_reservacion;
 -- Inserts para pruebas
 /*
 INSERT INTO usuario (cedula, rol_id, contrasena, p_nombre, s_nombre, p_apellido, s_apellido, f_nacim, pais, provincia, distrito, domicilio) VALUES
-    (1234567892, 2, crypt('medico123', gen_salt('md5')), 'Pedro', 'Jose', 'Martinez', 'Rodriguez', '1975-08-12', 'Costa Rica', 'Heredia', 'Central', 'Calle 10, Casa 20'),
-    (1234567893, 2, crypt('medico123', gen_salt('md5')), 'Ana', 'Maria', 'Gutierrez', 'Fernandez', '1965-11-05', 'Costa Rica', 'Cartago', 'Oriental', 'Avenida 5, Casa 15'),
-    (1234567894, 3, crypt('paciente123', gen_salt('md5')), 'Luis', 'Alberto', 'Ramirez', 'Sanchez', '1990-01-15', 'Costa Rica', 'Puntarenas', 'Central', 'Calle 20, Casa 30'),
-    (1234567895, 3, crypt('paciente123', gen_salt('md5')), 'Marta', 'Isabel', 'Castro', 'Jimenez', '1995-03-22', 'Costa Rica', 'Limon', 'Central', 'Avenida 3, Casa 8');
+    (1234567892, 2, 'd7a395614eb5f88f595d4ada638948f9', 'Pedro', 'Jose', 'Martinez', 'Rodriguez', '1975-08-12', 'Costa Rica', 'Heredia', 'Central', 'Calle 10, Casa 20'),
+    (1234567893, 2, 'd7a395614eb5f88f595d4ada638948f9', 'Ana', 'Maria', 'Gutierrez', 'Fernandez', '1965-11-05', 'Costa Rica', 'Cartago', 'Oriental', 'Avenida 5, Casa 15'),
+    (1234567894, 3, 'b60f15385b905be9c977c59aa3420fd2', 'Luis', 'Alberto', 'Ramirez', 'Sanchez', '1990-01-15', 'Costa Rica', 'Puntarenas', 'Central', 'Calle 20, Casa 30'),
+    (1234567895, 3, 'b60f15385b905be9c977c59aa3420fd2', 'Marta', 'Isabel', 'Castro', 'Jimenez', '1995-03-22', 'Costa Rica', 'Limon', 'Central', 'Avenida 3, Casa 8');
 
 INSERT INTO telefono_usuario(user_ced, telefono) VALUES
     (1234567892, '86954235'),
