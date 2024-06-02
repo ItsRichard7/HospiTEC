@@ -106,8 +106,8 @@ $$;
 /* Comando de Ejecucion: 
 CALL up_insertar_usuario(
      118450968,  -- cedula
-     3, -- rol_id
-    '6273746050885a56795feb58ccdb4b21',  -- contrasena
+     4, -- rol_id
+    'b60f15385b905be9c977c59aa3420fd2',  -- contrasena
     'Richi',  -- p_nombre
     'God',  -- s_nombre
     'Borbon',  -- p_apellido
