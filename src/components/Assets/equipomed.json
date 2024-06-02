@@ -1,0 +1,37 @@
+[
+    {
+        "nombre": "Luces Quirúrgicas",
+        "proveedor": "Proveedor A",
+        "cantidadDisponible": 5
+    },
+    {
+        "nombre": "Ultrasonidos",
+        "proveedor": "Proveedor B",
+        "cantidadDisponible": 10
+    },
+    {
+        "nombre": "Esterilizadores",
+        "proveedor": "Proveedor C",
+        "cantidadDisponible": 8
+    },
+    {
+        "nombre": "Desfibriladores",
+        "proveedor": "Proveedor D",
+        "cantidadDisponible": 7
+    },
+    {
+        "nombre": "Monitores",
+        "proveedor": "Proveedor E",
+        "cantidadDisponible": 12
+    },
+    {
+        "nombre": "Respiradores Artificiales",
+        "proveedor": "Proveedor F",
+        "cantidadDisponible": 6
+    },
+    {
+        "nombre": "Electrocardiógrafos",
+        "proveedor": "Proveedor G",
+        "cantidadDisponible": 9
+    }
+]
