@@ -20,18 +20,22 @@ DECLARE
 BEGIN
     -- Verificar si el usuario existe
     IF NOT EXISTS (SELECT 1 FROM usuario WHERE cedula = p_cedula) THEN
-        RETURN 2;  -- Usuario no existe
+        resultado = 2;  -- Usuario no existe
+        RETURN resultado;
     END IF;
 
     -- Verificar la contraseña
     IF NOT EXISTS (SELECT 1 FROM usuario WHERE cedula = p_cedula AND contrasena = p_contrasena) THEN
-        RETURN 3;  -- Contraseña incorrecta
+        resultado = 3;  -- Contraseña incorrecta
+        RETURN resultado;
     END IF;
 
     -- Credenciales correctas
-    RETURN 1;
+    resultado = 1;
+    RETURN resultado;
 END;
 $$;
+
 -- Comando de Ejecucion: SELECT fn_verificar_inicio_sesion(1234567890, '0192023a7bbd73250516f069df18b500') AS resultado;
 
 -- >>> Función para obtener la información de un usuario
