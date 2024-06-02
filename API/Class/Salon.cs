@@ -2,10 +2,10 @@
 {
     public class Salon
     {
-        public int Numero { get; set; }
-        public string Tipo { get; set; }
-        public string Nombre { get; set; }
-        public decimal Capacidad { get; set; }
-        public decimal Piso { get; set; }
+        public int numeroSalon { get; set; }
+        public string tipo { get; set; }
+        public string nombreSalon { get; set; }
+        public decimal capacidadCamas { get; set; }
+        public decimal piso { get; set; }
     }
 }
