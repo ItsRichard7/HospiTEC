@@ -75,6 +75,7 @@ $$;
 -- >>> Procedimiento almacenado para insertar un nuevo usuario <<<
 CREATE OR REPLACE PROCEDURE up_insertar_usuario(
     cedula NUMERIC(10), 
+    rol_id INTEGER,
     contrasena TEXT, 
     p_nombre VARCHAR(20), 
     s_nombre VARCHAR(20),      
@@ -95,7 +96,7 @@ BEGIN
         s_apellido, f_nacim, pais, 
         provincia, distrito, domicilio)
     VALUES(
-        cedula, 3, contrasena, 
+        cedula, rol_id, contrasena, 
         p_nombre, s_nombre, p_apellido, 
         s_apellido, f_nacim, pais, 
         provincia, distrito, domicilio);
@@ -105,6 +106,7 @@ $$;
 /* Comando de Ejecucion: 
 CALL up_insertar_usuario(
      118450968,  -- cedula
+     3, -- rol_id
     '6273746050885a56795feb58ccdb4b21',  -- contrasena
     'Richi',  -- p_nombre
     'God',  -- s_nombre
