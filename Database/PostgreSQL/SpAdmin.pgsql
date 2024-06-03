@@ -174,8 +174,8 @@ BEGIN
     RETURN QUERY
     SELECT a.numero, a.numero_salon, b.nombre, a.cuidados_intensivos, STRING_AGG(d.tipo, ', ') AS tipo_equipo
     FROM cama AS a JOIN salon AS b ON a.numero_salon = b.numero
-                   JOIN equipo_medico AS c ON a.numero = c.num_cama
-                   JOIN tipo_equipo AS d ON c.id_tipo = d.id
+                   LEFT JOIN equipo_medico AS c ON a.numero = c.num_cama
+                   LEFT JOIN tipo_equipo AS d ON c.id_tipo = d.id
     GROUP BY a.numero, a.numero_salon, b.nombre, a.cuidados_intensivos
     ORDER BY a.numero, a.numero_salon;
 END;
