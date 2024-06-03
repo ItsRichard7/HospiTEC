@@ -108,6 +108,25 @@ END;
 $$;
 -- Comando de Ejecucion: CALL up_insertar_equipo_medico('ELECAR02', 7, 1, 'MediTech Solutions');
 
+-- >>> Trigger usado para aumentar la cantidad disponible de equipos al insertar uno nuevo
+CREATE OR REPLACE FUNCTION fn_incrementar_cant_disponible()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE tipo_equipo
+    SET cant_default = cant_default + 1
+    WHERE id = NEW.id_tipo;
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_after_insert_equipo_medico
+AFTER INSERT ON equipo_medico
+FOR EACH ROW
+EXECUTE FUNCTION fn_incrementar_cant_disponible();
+-- Comando de Ejecucion: CALL up_insertar_equipo_medico('RESART02', 6, 1, 'MediTech Solutions');
+
 -- >>> Procedimiento almacenado para modificar un equipo medico <<<
 CREATE OR REPLACE PROCEDURE up_modificar_equipo_medico(
     p_placa VARCHAR(10),
