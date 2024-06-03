@@ -38,7 +38,7 @@ CREATE TABLE usuario(
     p_apellido VARCHAR(20) NOT NULL,-- Primer apellido
     s_apellido VARCHAR(20),          -- Segundo apellido (opcional)
     f_nacim DATE NOT NULL,           -- Fecha de nacimiento
-    pais VARCHAR(20) NOT NULL,       -- País de residencia
+    pais VARCHAR(40) NOT NULL,       -- País de residencia
     provincia VARCHAR(20) NOT NULL,  -- Provincia de residencia
     distrito VARCHAR(40) NOT NULL,  -- Distrito de residencia
     domicilio VARCHAR(200) NOT NULL,-- Domicilio completo
