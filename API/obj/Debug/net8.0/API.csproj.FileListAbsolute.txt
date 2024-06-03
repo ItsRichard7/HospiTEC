@@ -112,3 +112,16 @@ C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\Amazon.Lamb
 C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\Amazon.Lambda.Logging.AspNetCore.dll
 C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\Amazon.Lambda.RuntimeSupport.dll
 C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\Amazon.Lambda.Serialization.SystemTextJson.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\AWSSDK.Core.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\AWSSDK.SecurityToken.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\DnsClient.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\MongoDB.Bson.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\MongoDB.Driver.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\MongoDB.Driver.Core.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\MongoDB.Libmongocrypt.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\SharpCompress.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\Snappier.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\ZstdSharp.dll
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\runtimes\linux\native\libmongocrypt.so
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\runtimes\osx\native\libmongocrypt.dylib
+C:\Users\maest\Documents\TEC\github\BD\HospiTEC\API\bin\Debug\net8.0\runtimes\win\native\mongocrypt.dll
