@@ -79,14 +79,14 @@ RETURNS TABLE(
     p_placa VARCHAR(10),
     p_id_tipo INTEGER,
     p_nombre_tipo VARCHAR(20),
-    p_num_cama INTEGER,
+    p_cant_default NUMERIC(2),
     p_proveedor VARCHAR(30)
 )
 LANGUAGE plpgsql
 AS $$
 BEGIN
     RETURN QUERY
-    SELECT a.placa, a.id_tipo, b.tipo, a.num_cama, a.proveedor
+    SELECT a.placa, a.id_tipo, b.tipo, b.cant_default, a.proveedor
     FROM equipo_medico AS a JOIN tipo_equipo AS b ON a.id_tipo = b.id;
 END;
 $$;
