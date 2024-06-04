@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using OfficeOpenXml;
 
@@ -15,6 +18,13 @@ namespace API.Controllers
     [ApiController]
     public class CuentasController : ControllerBase
     {
+        private readonly AppDbContext _context;
+
+        public CuentasController(AppDbContext context)
+        {
+            _context = context;
+        }
+
         [HttpPost("upload")]
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
@@ -84,14 +94,14 @@ namespace API.Controllers
 
                             cuentasConvertidas.Add(new NuevaCuenta
                             {
-                                Cedula = cedula.Replace(" ", "").Substring(0, 8),
+                                Cedula = int.Parse(cedula.Replace(" ", "").Substring(0, 8)),
                                 Rol = 4,
-                                Contrasena = "paciente123",
+                                Contrasena = "b60f15385b905be9c977c59aa3420fd2",
                                 PNombre = primerNombre,
                                 SNombre = segundoNombre,
                                 PApellido = primerApellido,
                                 SApellido = "No Definido", 
-                                FechaNacimiento = DateTime.ParseExact(fechaNacimiento, "MMM dd, yyyy", null).ToString("yyyy-MM-dd"),
+                                FechaNacimiento = DateOnly.Parse(DateTime.ParseExact(fechaNacimiento, "MMM dd, yyyy", null).ToString("yyyy-MM-dd")),
                                 Pais = "No definido",
                                 Provincia = "No definido",
                                 Distrito = "No definido",
@@ -118,13 +128,62 @@ namespace API.Controllers
                 }
             }
 
-            var jsonResult = JsonConvert.SerializeObject(cuentasConvertidas, Formatting.Indented);
+
+            //var jsonResult = JsonConvert.SerializeObject(cuentasConvertidas, Formatting.Indented);
             byte[] excelBytes = GenerateExcelFromCuentas(cuentasInvalidas);
+
+            var jsonResult = JsonConvert.SerializeObject(cuentasConvertidas, Formatting.Indented);
+            var cuentasConvertidas2 = JsonConvert.DeserializeObject<List<NuevaCuenta>>(jsonResult);
+
+            foreach (var cuenta in cuentasConvertidas2)
+            {
+                // Llamar al método InsertarUsuario para cada cuenta convertida
+                await InsertarUsuario(cuenta);
+            }
 
             // Devolver el archivo Excel
             return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "cuentas_invalidas.xlsx");
         
     }
+        private async Task InsertarUsuario(NuevaCuenta cuenta)
+        {
+            var sql = @"
+                CALL up_insertar_usuario(
+                    @p_cedula,
+                    @rol_id,
+                    @p_contrasena,
+                    @p_p_nombre,
+                    @p_s_nombre,
+                    @p_p_apellido,
+                    @p_s_apellido,
+                    @p_f_nacim,
+                    @p_pais,
+                    @p_provincia,
+                    @p_distrito,
+                    @p_domicilio
+                )";
+
+            var parameters = new[]
+            {
+                new Npgsql.NpgsqlParameter("@p_cedula", cuenta.Cedula),
+                new Npgsql.NpgsqlParameter("@rol_id", cuenta.Rol),
+                new Npgsql.NpgsqlParameter("@p_contrasena", cuenta.Contrasena),
+                new Npgsql.NpgsqlParameter("@p_p_nombre", cuenta.PNombre),
+                new Npgsql.NpgsqlParameter("@p_s_nombre", cuenta.SNombre),
+                new Npgsql.NpgsqlParameter("@p_p_apellido", cuenta.PApellido),
+                new Npgsql.NpgsqlParameter("@p_s_apellido", cuenta.SApellido),
+                new Npgsql.NpgsqlParameter("@p_f_nacim", cuenta.FechaNacimiento),
+                new Npgsql.NpgsqlParameter("@p_pais", cuenta.Pais),
+                new Npgsql.NpgsqlParameter("@p_provincia", cuenta.Provincia),
+                new Npgsql.NpgsqlParameter("@p_distrito", cuenta.Distrito),
+                new Npgsql.NpgsqlParameter("@p_domicilio", cuenta.Domicilio)
+            };
+
+            await _context.Database.ExecuteSqlRawAsync(sql, parameters);
+
+        }
+
+
         private byte[] GenerateExcelFromCuentas(List<Cuenta> cuentas)
         {
             using (var package = new ExcelPackage())
@@ -196,14 +255,14 @@ namespace API.Controllers
 
         public class NuevaCuenta
         {
-            public string Cedula { get; set; }
+            public int Cedula { get; set; }
             public int Rol { get; set; }
             public string Contrasena { get; set; }
             public string PNombre { get; set; }
             public string SNombre { get; set; }
             public string PApellido { get; set; }
             public string SApellido { get; set; }
-            public string FechaNacimiento { get; set; }
+            public DateOnly FechaNacimiento { get; set; }
             public string Pais { get; set; }
             public string Provincia { get; set; }
             public string Distrito { get; set; }
