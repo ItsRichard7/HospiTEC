@@ -71,7 +71,8 @@ namespace API.Controllers
         [HttpPost("insertar")]
         public async Task<IActionResult> InsertarReservacionCama([FromBody] ReservacionCamaRequest request)
         {
-            var sql = "SELECT fn_insertar_reservacion_cama(@p_user_ced, @p_num_cama, @p_fecha_ingreso, @p_fecha_salida)";
+            var sql = @"
+                SELECT fn_insertar_reservacion_cama(@p_user_ced, @p_num_cama, @p_fecha_ingreso, @p_fecha_salida) AS IdReservacion";
             var parameters = new[]
             {
                 new NpgsqlParameter("@p_user_ced", request.cedula),
@@ -80,12 +81,24 @@ namespace API.Controllers
                 new NpgsqlParameter("@p_fecha_salida", request.fechaSalida)
             };
 
-            var result = await _context.Database.ExecuteSqlRawAsync(sql, parameters);
-            return Ok(result);
+            var result = await _context.Set<ReservacionResult>()
+                                       .FromSqlRaw(sql, parameters)
+                                       .ToListAsync();
+
+            var idReservacion = result.FirstOrDefault()?.IdReservacion;
+
+            if (idReservacion.HasValue)
+            {
+                return Ok(idReservacion.Value);
+            }
+            else
+            {
+                return StatusCode(500, "Error al insertar la reservación.");
+            }
         }
 
-        // POST: api/reservaciones/procedimiento
-        [HttpPost("procedimiento")]
+            // POST: api/reservaciones/procedimiento
+            [HttpPost("procedimiento")]
         public async Task<IActionResult> InsertarProcedimientoReservacion([FromBody] ProcedimientoReservacionRequest request)
         {
             var sql = "CALL up_insertar_procedimiento_reservacion(@p_id_procedimiento, @p_id_reservacion)";
@@ -101,6 +114,10 @@ namespace API.Controllers
 
     }
 
+    public class ReservacionResult
+    {
+        public int IdReservacion { get; set; }
+    }
 
     public class ReservacionUsuario
     {

@@ -24,6 +24,8 @@ namespace API.Models
         public DbSet<ReservacionUsuario> ReservacionUsuario { get; set; }
         public DbSet<ReservacionCama> ReservacionCama { get; set; }
         public DbSet<DisponibilidadResult> DisponibilidadResult { get; set; }
+        public DbSet<ReservacionResult> ReservacionResult { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -40,6 +42,8 @@ namespace API.Models
             modelBuilder.Entity<HistorialMedicoDetalle>().HasNoKey();
             modelBuilder.Entity<HistorialMedicoModif>().HasNoKey();
             modelBuilder.Entity<DisponibilidadResult>().HasNoKey();
+            modelBuilder.Entity<ReservacionResult>().HasNoKey().ToView(null);
+
 
 
 
@@ -106,7 +110,6 @@ namespace API.Models
             modelBuilder.Entity<ReservacionCama>().Property(s => s.id).HasColumnName("p_id");
             modelBuilder.Entity<ReservacionCama>().Property(s => s.fechaIngreso).HasColumnName("p_fecha_ingreso");
             modelBuilder.Entity<ReservacionCama>().Property(s => s.fechaSalida).HasColumnName("p_fecha_salida");
-
         }
     }
 }
