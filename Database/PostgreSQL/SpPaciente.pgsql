@@ -54,10 +54,13 @@ CREATE OR REPLACE FUNCTION fn_verificar_disponibilidad_cama(
     p_fecha_ingreso DATE,
     p_fecha_salida DATE
 )
-RETURNS BOOLEAN
+RETURNS INTEGER
 LANGUAGE plpgsql
 AS $$
+DECLARE
+    disponibilidad INTEGER;
 BEGIN
+    -- Verifica si hay alguna reserva que se solape con las fechas proporcionadas
     IF EXISTS (
         SELECT 1
         FROM reservacion_cama
@@ -69,13 +72,15 @@ BEGIN
             (fecha_salida BETWEEN p_fecha_ingreso AND p_fecha_salida)
         )
     ) THEN
-        RETURN FALSE;  -- Hay una colisión de fechas, la cama no está disponible
+        disponibilidad := 0;  -- Hay una colisión de fechas, la cama no está disponible
     ELSE
-        RETURN TRUE;  -- No hay colisión de fechas, la cama está disponible
+        disponibilidad := 1;  -- No hay colisión de fechas, la cama está disponible
     END IF;
+
+    RETURN disponibilidad;
 END;
 $$;
--- Comando de Ejecucion: SELECT * FROM fn_verificar_disponibilidad_cama(1, '2024-05-15', '2024-06-15');
+-- Comando de Ejecucion: SELECT * FROM fn_verificar_disponibilidad_cama(1, '2024-06-14', '2024-06-15');
 
 -- >>> Procedure para insertar una reservacion de cama <<<
 CREATE OR REPLACE FUNCTION fn_insertar_reservacion_cama(
