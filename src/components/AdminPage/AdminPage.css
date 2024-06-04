@@ -184,3 +184,9 @@
   height: 20px;
   width: 0;
 }
+
+.evaluacion-column {
+  width: calc(
+    33.33% - 20px
+  ); /* Ancho igual para las tres columnas, con un espacio de 20px entre ellas */
+}

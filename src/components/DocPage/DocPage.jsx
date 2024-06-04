@@ -3,9 +3,11 @@ import "./DocPage.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Container, Row, Tabs, Tab, Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import md5 from "md5";
 
 import historialMedData from "../Assets/historialMed.json";
 import { BsFillPencilFill } from "react-icons/bs";
+import { LuEyeOff, LuEye } from "react-icons/lu";
 
 import HmModal from "./createHMModal";
 import EditHMModal from "./editHMModal";
@@ -15,18 +17,21 @@ export const DocPage = () => {
   const { usuario } = location.state || {};
   const navigate = useNavigate();
 
-  const [nombre, setNombre] = useState("");
-  const [apellido1, setApellido1] = useState("");
-  const [apellido2, setApellido2] = useState("");
+  const [pNombre, setPNombre] = useState("");
+  const [sNombre, setSNombre] = useState("");
+  const [pApellido, setPApellido] = useState("");
+  const [sApellido, setSApellido] = useState("");
   const [cedula, setCedula] = useState("");
-  const [telefono, setTelefono] = useState("");
+  const [contrasena, setContrasena] = useState("");
   const [pais, setPais] = useState("");
   const [provincia, setProvincia] = useState("");
   const [distrito, setDistrito] = useState("");
   const [domicilio, setDomicilio] = useState("");
   const [fechaNacimiento, setFechaNacimiento] = useState("");
-  const [patologias, setPatologias] = useState("");
+  const [mostrarContrasena, setMostrarContrasena] = useState(false);
+  const [patologia, setPatologia] = useState("");
   const [tratamiento, setTratamiento] = useState("");
+
   const [historialesMedicos, setHistorialesMedicos] = useState(
     historialMedData || []
   );
@@ -35,47 +40,123 @@ export const DocPage = () => {
 
   const [error, setError] = useState("");
 
-  const handleAgregarPaciente = (e) => {
+  const handleAgregarPaciente = async (e) => {
     e.preventDefault();
 
-    const tratamientoFinal = tratamiento.trim() === "" ? null : tratamiento;
-    const patologiasFinal = patologias.trim() === "" ? null : patologias;
+    const fecha_nacimiento = fechaNacimiento;
 
-    const nuevoPaciente = {
-      nombre,
-      apellido1,
-      apellido2,
-      cedula,
-      telefono,
+    const hashedPassword = md5(contrasena);
+
+    const newUser = {
+      pNombre,
+      sNombre,
+      pApellido,
+      sApellido,
+      cedula: parseInt(cedula),
+      contrasena: hashedPassword,
       pais,
       provincia,
       distrito,
       domicilio,
-      fechaNacimiento,
-      patologias: patologiasFinal,
-      tratamiento: tratamientoFinal,
-      rol: "paciente",
-      aprobado: false,
+      fecha_nacimiento,
+      rol: 4,
     };
 
-    // Guardar el paciente en el localStorage
-    localStorage.setItem("nuevoPaciente", JSON.stringify(nuevoPaciente));
+    console.log(newUser);
 
-    console.log("Nuevo paciente:", nuevoPaciente);
-    // Recargar página o manejar el nuevo paciente como sea necesario
+    try {
+      const response = await fetch(
+        "https://hospitecapi.azurewebsites.net/api/insertarUsuario",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newUser),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const responseData = await response.text(); // obtener como texto
+
+      try {
+        const jsonResponse = JSON.parse(responseData);
+        console.log("Nuevo usuario registrado:", jsonResponse);
+        navigate("/");
+      } catch (e) {
+        console.error("Error al parsear la respuesta:", e);
+        window.location.reload();
+        setError("Todo salio bien");
+      }
+    } catch (error) {
+      console.error("Error al registrar el usuario:", error);
+      setError("Error al registrar el usuario. Por favor, inténtalo de nuevo.");
+    }
+  };
+
+  const handleAgregarPatologia = async (e) => {
+    e.preventDefault();
+
+    const nuevaPatologia = {
+      nombrePatologia: patologia,
+      nombreTratamiento: tratamiento,
+      cedula: parseInt(cedula),
+    };
+
+    try {
+      const response = await fetch(
+        "https://hospitecapi.azurewebsites.net/api/patologia",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(nuevaPatologia),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      console.log("Patología agregada con éxito.");
+
+      // Limpia los campos después de enviarlos
+      setPatologia("");
+      setTratamiento("");
+      setCedula("");
+    } catch (error) {
+      console.error("Error al agregar la patología:", error);
+      setError("Error al agregar la patología. Por favor, inténtalo de nuevo.");
+    }
   };
 
   // listas
 
   const [historialPaciente, setHistorialPaciente] = useState([]);
 
-  const handleBuscarReporte = () => {
-    // Filtrar el historial de horas por la cédula ingresada
-    const historialFiltrado = historialesMedicos.filter(
-      (registro) => registro.cedula === cedulaB
-    );
-    // Actualizar el estado con el historial de horas y las horas totales
-    setHistorialPaciente(historialFiltrado);
+  const handleBuscarReporte = async () => {
+    try {
+      const response = await fetch(
+        `https://hospitecapi.azurewebsites.net/api/historialmedico/${cedulaB}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const historialMedicoData = await response.json();
+      setHistorialPaciente(historialMedicoData);
+      console.log(historialMedicoData);
+    } catch (error) {
+      console.error("Error al buscar el historial médico:", error);
+      setError(
+        "Error al buscar el historial médico. Por favor, inténtalo de nuevo."
+      );
+    }
   };
 
   /// editar
@@ -111,14 +192,25 @@ export const DocPage = () => {
           <Tab eventKey="tab-1" title="Agregar Paciente">
             <div className="wrapper-doc">
               <form onSubmit={handleAgregarPaciente}>
+                <h1>HospiTEC</h1>
+                <h2>Registrarse</h2>
                 <div>
                   <div className="input-box">
                     <input
                       type="text"
-                      placeholder="Nombre"
+                      placeholder="Primer Nombre"
                       required
-                      value={nombre}
-                      onChange={(e) => setNombre(e.target.value)}
+                      value={pNombre}
+                      onChange={(e) => setPNombre(e.target.value)}
+                    />
+                  </div>
+                  <div className="input-box">
+                    <input
+                      type="text"
+                      placeholder="Segundo Nombre"
+                      required
+                      value={sNombre}
+                      onChange={(e) => setSNombre(e.target.value)}
                     />
                   </div>
                   <div className="input-box">
@@ -126,8 +218,8 @@ export const DocPage = () => {
                       type="text"
                       placeholder="Primer Apellido"
                       required
-                      value={apellido1}
-                      onChange={(e) => setApellido1(e.target.value)}
+                      value={pApellido}
+                      onChange={(e) => setPApellido(e.target.value)}
                     />
                   </div>
                   <div className="input-box">
@@ -135,8 +227,8 @@ export const DocPage = () => {
                       type="text"
                       placeholder="Segundo Apellido"
                       required
-                      value={apellido2}
-                      onChange={(e) => setApellido2(e.target.value)}
+                      value={sApellido}
+                      onChange={(e) => setSApellido(e.target.value)}
                     />
                   </div>
                   <div className="input-box">
@@ -150,17 +242,31 @@ export const DocPage = () => {
                   </div>
                   <div className="input-box">
                     <input
-                      type="number"
-                      placeholder="Teléfono"
+                      type={mostrarContrasena ? "text" : "password"}
+                      placeholder="Contraseña"
                       required
-                      value={telefono}
-                      onChange={(e) => setTelefono(e.target.value)}
+                      value={contrasena}
+                      onChange={(e) => setContrasena(e.target.value)}
                     />
+                    <span
+                      title={
+                        mostrarContrasena
+                          ? "Ocultar contraseña"
+                          : "Mostrar contraseña"
+                      }
+                      onClick={() => setMostrarContrasena(!mostrarContrasena)}
+                    >
+                      {mostrarContrasena ? (
+                        <LuEyeOff className="icon" />
+                      ) : (
+                        <LuEye className="icon" />
+                      )}
+                    </span>
                   </div>
                   <div className="input-box">
                     <input
                       type="text"
-                      placeholder="Pais"
+                      placeholder="País"
                       required
                       value={pais}
                       onChange={(e) => setPais(e.target.value)}
@@ -194,7 +300,6 @@ export const DocPage = () => {
                     />
                   </div>
                   <div className="input-box">
-                    <label htmlFor="fechaNacimiento">Fecha de Nacimiento</label>
                     <input
                       type="date"
                       placeholder="Fecha de Nacimiento"
@@ -203,30 +308,51 @@ export const DocPage = () => {
                       onChange={(e) => setFechaNacimiento(e.target.value)}
                     />
                   </div>
-                  <div className="input-box">
-                    <input
-                      type="text"
-                      placeholder="Patologías"
-                      value={patologias}
-                      onChange={(e) => setPatologias(e.target.value)}
-                    />
-                  </div>
-                  <div className="input-box">
-                    <textarea
-                      id="tratamiento"
-                      placeholder="Tratamientos"
-                      value={tratamiento}
-                      onChange={(e) => setTratamiento(e.target.value)}
-                      rows={10} // Ajusta el número de filas aquí para hacer el textarea más grande
-                    ></textarea>
-                  </div>
                   {error && <p className="error-message">{error}</p>}
-                  <button type="submit">Añadir paciente</button>
+                  <button type="submit">Registrarse</button>
                 </div>
               </form>
             </div>
           </Tab>
-          <Tab eventKey="tab-2" title="Historial Clinico">
+          <Tab eventKey="tab-2" title="Agregar Patologías">
+            <div className="wrapper-doc">
+              <form onSubmit={handleAgregarPatologia}>
+                <h1>Agregar Patología</h1>
+                <div>
+                  <div className="input-box">
+                    <input
+                      type="number"
+                      placeholder="Cédula"
+                      required
+                      value={cedula}
+                      onChange={(e) => setCedula(e.target.value)}
+                    />
+                  </div>
+                  <div className="input-box">
+                    <input
+                      type="text"
+                      placeholder="Patología"
+                      required
+                      value={patologia}
+                      onChange={(e) => setPatologia(e.target.value)}
+                    />
+                  </div>
+                  <div className="input-box">
+                    <input
+                      type="text"
+                      placeholder="Tratamiento"
+                      required
+                      value={tratamiento}
+                      onChange={(e) => setTratamiento(e.target.value)}
+                    />
+                  </div>
+                  {error && <p className="error-message">{error}</p>}
+                  <button type="submit">Agregar Patología</button>
+                </div>
+              </form>
+            </div>
+          </Tab>
+          <Tab eventKey="tab-3" title="Historial Clinico">
             <div>
               <div className="geeksContainer">
                 <input
@@ -257,7 +383,7 @@ export const DocPage = () => {
                     <tbody>
                       {historialPaciente.map((registro, idx) => (
                         <tr key={idx}>
-                          <td>{registro.procedimiento_realizado}</td>
+                          <td>{registro.nombre_procedimiento}</td>
                           <td>{registro.fecha_procedimiento}</td>
                           <td className="expand">
                             {registro.tratamiento_prescrito}
@@ -294,6 +420,7 @@ export const DocPage = () => {
           show={showEditHMModal}
           handleClose={handleCloseEditHMSModal}
           hmDataToEdit={hmDataToEdit}
+          cedulaB={cedulaB}
         />
       )}
 

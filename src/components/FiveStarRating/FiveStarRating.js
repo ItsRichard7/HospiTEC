@@ -12,7 +12,7 @@ const FiveStarRating = ({ onRatingChange }) => {
 
   return (
     <div className="star-rating">
-      {[...Array(10)].map((star, index) => {
+      {[...Array(5)].map((star, index) => {
         const ratingValue = index + 1;
         return (
           <label key={index}>

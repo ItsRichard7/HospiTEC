@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./AdminPage.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Container, Row, Tabs, Tab, Button } from "react-bootstrap";
@@ -8,6 +9,7 @@ import camasData from "../Assets/camas.json";
 import equipoMedicoData from "../Assets/equipomed.json";
 import medProcData from "../Assets/medProc.json";
 import usuariosData from "../Assets/usuarios.json";
+import FilePicker from "./FilePicker";
 
 //modals
 import SalonCreateModal from "./Modals/SalonModals/SalonCreateModal";
@@ -38,6 +40,13 @@ export const AdminPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  /*   const reproducirSonido = () => {
+    const audio = new Audio('ruta/al/sonido.mp3');
+    audio.play();
+  };
+
+  return <button onClick={reproducirSonido}>Reproducir Sonido</button>; */
+
   useEffect(() => {
     const fetchSalones = async () => {
       try {
@@ -48,7 +57,6 @@ export const AdminPage = () => {
           throw new Error(`Error: ${response.status}`);
         }
         const data = await response.json();
-        console.log(data);
         setSalones(data);
       } catch (err) {
         setError(err.message);
@@ -57,6 +65,68 @@ export const AdminPage = () => {
       }
     };
 
+    const fetchCamas = async () => {
+      try {
+        const response = await fetch(
+          "https://hospitecapi.azurewebsites.net/api/camas"
+        );
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+        const data = await response.json();
+        setCamas(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+    const fetchEquipoMedico = async () => {
+      try {
+        const response = await fetch(
+          "https://hospitecapi.azurewebsites.net/api/equiposmedicos"
+        );
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+        const data = await response.json();
+        setEquipoMedico(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    const fetchMedProc = async () => {
+      try {
+        const response = await fetch(
+          "https://hospitecapi.azurewebsites.net/api/procedimientos"
+        );
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+        const data = await response.json();
+        setMedProc(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    const fetchUsuarios = async () => {
+      try {
+        const response = await fetch(
+          "https://hospitecapi.azurewebsites.net/api/personal"
+        );
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+        const data = await response.json();
+        setUsuarios(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+    fetchUsuarios();
+    fetchMedProc();
+    fetchEquipoMedico();
+    fetchCamas();
     fetchSalones();
   }, []);
 
@@ -68,43 +138,150 @@ export const AdminPage = () => {
   //  const [lab, setLab] = useState(labData || []);
 
   // handle borrar
-  const handleEraseSalon = (idx) => {
+  const handleEraseSalon = async (idx) => {
     const salonNum = salones[idx].numeroSalon;
-
     console.log("Salón a borrar " + salonNum);
-    //window.location.reload();
+
+    // Incluye el número del salón en la URL
+    const url = `https://hospitecapi.azurewebsites.net/api/salones/eliminar/${salonNum}`;
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        console.log("Salón borrado exitosamente");
+
+        window.location.reload();
+      } else {
+        console.error("Error al borrar el salón: " + response.statusText);
+      }
+    } catch (error) {
+      console.error("Error de red al borrar el salón: " + error);
+    }
   };
 
-  const handleErasePersonal = (idx) => {
+  const handleErasePersonal = async (idx) => {
     const PersonalCed = DocyEnfer[idx].cedula;
+    console.log("Personal a borrar " + PersonalCed);
 
-    console.log("Salón a borrar " + PersonalCed);
-    //window.location.reload();
+    const url = "https://hospitecapi.azurewebsites.net/api/personal/eliminar";
+    const data = { cedula: PersonalCed };
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        console.log("Personal borrado exitosamente");
+
+        window.location.reload();
+      } else {
+        console.error("Error al borrar el personal: " + response.statusText);
+      }
+    } catch (error) {
+      console.error("Error de red al borrar el personal: " + error);
+    }
   };
 
-  const handleEraseEM = (idx) => {
-    const equipoMedicoNom = equipoMedico[idx].nombre;
+  const handleEraseEM = async (idx) => {
+    const equipoMedicoNom = equipoMedico[idx].placa;
     console.log("Equipo Medico a borrar " + equipoMedicoNom);
-    //window.location.reload();
+
+    const url =
+      "https://hospitecapi.azurewebsites.net/api/equiposmedicos/eliminar";
+    const data = { placa: equipoMedicoNom };
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        console.log("Equipo Médico borrado exitosamente");
+
+        window.location.reload();
+      } else {
+        console.error(
+          "Error al borrar el equipo médico: " + response.statusText
+        );
+      }
+    } catch (error) {
+      console.error("Error de red al borrar el equipo médico: " + error);
+    }
   };
 
-  const handleEraseCamas = (idx) => {
+  const handleEraseCamas = async (idx) => {
     const camanum = camas[idx].numeroCama;
     console.log("Cama a borrar " + camanum);
-    //window.location.reload();
+
+    const url = "https://hospitecapi.azurewebsites.net/api/camas/eliminar";
+    const data = { numeroCama: camanum };
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        console.log("Cama borrada exitosamente");
+
+        window.location.reload();
+      } else {
+        console.error("Error al borrar la cama: " + response.statusText);
+      }
+    } catch (error) {
+      console.error("Error de red al borrar la cama: " + error);
+    }
   };
 
-  const handleErasePM = (idx) => {
-    const procedimientoNom = medProc[idx].nombreProcedimiento;
-    console.log("Procedimiento médico a borrar " + procedimientoNom);
-    //window.location.reload();
-  };
+  const handleErasePM = async (idx) => {
+    const procedimientoID = medProc[idx].id;
+    console.log("Procedimiento médico a borrar " + procedimientoID);
 
-  const [evaluaciones, setEvaluaciones] = useState([
-    { nombre: "Evaluación 1", valor: 6.2 },
-    { nombre: "Evaluación 2", valor: 8.2 },
-    { nombre: "Evaluación 3", valor: 3.0 },
-  ]);
+    const url =
+      "https://hospitecapi.azurewebsites.net/api/procedimientos/eliminar";
+    const data = { id: procedimientoID };
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        console.log("Procedimiento médico borrado exitosamente");
+
+        window.location.reload();
+      } else {
+        console.error(
+          "Error al borrar el procedimiento médico: " + response.statusText
+        );
+      }
+    } catch (error) {
+      console.error("Error de red al borrar el procedimiento médico: " + error);
+    }
+  };
 
   // LOGICA DE LOS MODALS
 
@@ -139,7 +316,6 @@ export const AdminPage = () => {
   const handleOpenSalonEditModal = (idx) => {
     setSalonDataToEdit(salones[idx]);
     setSalonEditModal(true);
-    console.log(salonDataToEdit);
   };
   const handleCloseSalonEditModal = () => {
     setSalonDataToEdit(null);
@@ -193,6 +369,33 @@ export const AdminPage = () => {
   const handleGenerate = () => {
     console.log("generar excel");
   };
+  const [selectedFile, setSelectedFile] = useState(null);
+  const handleFileSelect = (file) => {
+    console.log("Archivo seleccionado:", file.name);
+    setSelectedFile(file.name);
+  };
+
+  const [evaluaciones, setEvaluaciones] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("https://hospitecapi.azurewebsites.net/EvalServicio/all")
+      .then((response) => {
+        const data = response.data;
+        console.log(data);
+        const formattedData = data.map((item) => ({
+          nombre: `Evaluación del paciente: ${item.cedPaciente}`,
+          aseo: item.aseo,
+          trato: item.trato,
+          puntualidad: item.puntualidad,
+          comentarios: item.comentarios,
+        }));
+        setEvaluaciones(formattedData);
+      })
+      .catch((error) => {
+        console.error("Error fetching data: ", error);
+      });
+  }, []);
 
   return (
     <Container className="py-4">
@@ -209,7 +412,7 @@ export const AdminPage = () => {
               <table className="table">
                 <thead>
                   <tr>
-                    <th>Salón en el que se encuentra</th>
+                    <th>ID</th>
                     <th>Nombre del salon en el que se encuentra</th>
                     <th>Capacidad de camas</th>
                     <th>Tipo</th>
@@ -254,7 +457,8 @@ export const AdminPage = () => {
               <table className="table">
                 <thead>
                   <tr>
-                    <th>Nombre</th>
+                    <th>Placa</th>
+                    <th>Tipo</th>
                     <th>Cantidad disponible</th>
                     <th>Proveedor</th>
                     <th>Acciones</th>
@@ -263,8 +467,9 @@ export const AdminPage = () => {
                 <tbody>
                   {equipoMedico.map((EM, idx) => (
                     <tr key={idx}>
+                      <td>{EM.placa}</td>
                       <td>{EM.nombre}</td>
-                      <td>{EM.cantidadDisponible}</td>
+                      <td>{EM.cantidadDefault}</td>
                       <td className="expand">{EM.proveedor}</td>
                       <td className="fit">
                         <span className="actions">
@@ -297,6 +502,7 @@ export const AdminPage = () => {
                   <tr>
                     <th>Número de cama</th>
                     <th>Salón en el que se encuentra</th>
+                    <th>Nombre del Salón</th>
                     <th>UCI</th>
                     <th>Equipo médico con el que cuenta</th>
                     <th>Acciones</th>
@@ -307,11 +513,18 @@ export const AdminPage = () => {
                     <tr key={idx}>
                       <td>{cama.numeroCama}</td>
                       <td>{cama.salon}</td>
-                      <td>{cama.UCI ? "Sí" : "No"}</td>
+                      <td>{cama.nombreSalon}</td>
+                      <td>{cama.uci ? "Sí" : "No"}</td>
                       <td className="expand">
-                        {cama.equipoMedico.map((equipo, i) => (
-                          <div key={i}>{equipo}</div>
-                        ))}
+                        {cama.equipoMedico
+                          ? typeof cama.equipoMedico === "string"
+                            ? cama.equipoMedico
+                                .split(",")
+                                .map((equipo, i) => (
+                                  <div key={i}>{equipo.trim()}</div>
+                                ))
+                            : cama.equipoMedico
+                          : "No tiene"}
                       </td>
                       <td className="fit">
                         <span className="actions">
@@ -337,6 +550,7 @@ export const AdminPage = () => {
               </div>
             </div>
           </Tab>
+
           <Tab eventKey="tab-4" title="Gestión de Procedimientos Médicos">
             <div className="table-wrapper">
               <table className="table">
@@ -387,7 +601,10 @@ export const AdminPage = () => {
                     <th>Segundo Apellido</th>
                     <th>cedula</th>
                     <th>telefono</th>
-                    <th>direccion</th>
+                    <th>Pais</th>
+                    <th>Provincia</th>
+                    <th>Distrito</th>
+                    <th>Domicilio</th>
                     <th>Fecha de nacimiento</th>
                     <th>Fecha de ingreso</th>
                     <th>Rol</th>
@@ -403,7 +620,10 @@ export const AdminPage = () => {
                       <td>{personal.sApellido}</td>
                       <td>{personal.cedula}</td>
                       <td>{personal.telefono}</td>
-                      <td>{personal.direccion}</td>
+                      <td>{personal.pais}</td>
+                      <td>{personal.provincia}</td>
+                      <td>{personal.distrito}</td>
+                      <td>{personal.domicilio}</td>
                       <td>{personal.fecha_nacimiento}</td>
                       <td>{personal.fecha_ingreso}</td>
                       <td>{personal.rol}</td>
@@ -435,6 +655,7 @@ export const AdminPage = () => {
             <div className="wrapper">
               <h1>WHAAAAAAAAAAT </h1>
               <h1>Creo que solo presiono un boton y ya xd</h1>
+              <FilePicker onFileSelect={handleFileSelect} />
               <Button onClick={handleGenerate}>Generar</Button>
             </div>
           </Tab>
@@ -443,33 +664,100 @@ export const AdminPage = () => {
               <table className="table">
                 <thead>
                   <tr>
-                    <th>Evaluación</th>
-                    <th className="expand">Promedio</th>
+                    <th class>Evaluación</th>
+                    <th>Aseo</th>
+                    <th>Trato</th>
+                    <th>Puntualidad</th>
+                    <th>Promedio</th>
+                    <th>Comentario</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {evaluaciones.map((evaluacion, idx) => (
-                    <tr key={idx}>
-                      <td>{evaluacion.nombre}</td>
-                      <td>
-                        <div className="progress-bar">
-                          <div
-                            className="progress"
-                            style={{
-                              width: `${evaluacion.valor * 10}%`,
-                              backgroundColor:
-                                evaluacion.valor >= 7.49
-                                  ? "green"
-                                  : evaluacion.valor >= 4.9
-                                  ? "yellow"
-                                  : "red",
-                            }}
-                          ></div>
-                        </div>
-                        <span>{evaluacion.valor}</span>
-                      </td>
-                    </tr>
-                  ))}
+                  {evaluaciones.map((evaluacion, idx) => {
+                    // Ajustar evaluaciones de 0 a 0.1
+                    const aseo = evaluacion.aseo === 0 ? 0.1 : evaluacion.aseo;
+                    const trato =
+                      evaluacion.trato === 0 ? 0.1 : evaluacion.trato;
+                    const puntualidad =
+                      evaluacion.puntualidad === 0
+                        ? 0.1
+                        : evaluacion.puntualidad;
+
+                    const promedio = (aseo + trato + puntualidad) / 3;
+
+                    const promedioColor =
+                      promedio >= 3
+                        ? "green"
+                        : promedio >= 2
+                        ? "yellow"
+                        : "red";
+
+                    return (
+                      <tr key={idx}>
+                        <td>{evaluacion.nombre}</td>
+                        <td className="evaluacion-column">
+                          <div className="progress-bar">
+                            <div
+                              className="progress bg-gray"
+                              style={{
+                                width: `${(aseo / 5) * 100}%`,
+                                backgroundColor:
+                                  aseo >= 3
+                                    ? "green"
+                                    : aseo >= 2
+                                    ? "yellow"
+                                    : "red",
+                              }}
+                            ></div>
+                          </div>
+                        </td>
+                        <td className="evaluacion-column">
+                          <div className="progress-bar">
+                            <div
+                              className="progress bg-gray"
+                              style={{
+                                width: `${(trato / 5) * 100}%`,
+                                backgroundColor:
+                                  trato >= 3
+                                    ? "green"
+                                    : trato >= 2
+                                    ? "yellow"
+                                    : "red",
+                              }}
+                            ></div>
+                          </div>
+                        </td>
+                        <td className="evaluacion-column">
+                          <div className="progress-bar">
+                            <div
+                              className="progress bg-gray"
+                              style={{
+                                width: `${(puntualidad / 5) * 100}%`,
+                                backgroundColor:
+                                  puntualidad >= 3
+                                    ? "green"
+                                    : puntualidad >= 2
+                                    ? "yellow"
+                                    : "red",
+                              }}
+                            ></div>
+                          </div>
+                        </td>
+                        <td className="expand">
+                          <div className="progress-bar">
+                            <div
+                              className="progress bg-gray"
+                              style={{
+                                width: `${(promedio / 5) * 100}%`,
+                                backgroundColor: promedioColor,
+                              }}
+                            ></div>
+                          </div>
+                        </td>
+                        <td>{evaluacion.comentarios}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

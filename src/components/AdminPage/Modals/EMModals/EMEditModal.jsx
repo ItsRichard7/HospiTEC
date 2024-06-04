@@ -3,9 +3,9 @@ import { Modal, Button, Form, Alert } from "react-bootstrap";
 
 const EMEditModal = ({ show, handleClose, emDataToEdit }) => {
   const [emData, setEmData] = useState({
-    nombre: "",
+    placa: "",
     proveedor: "",
-    cantidadDisponible: "",
+    tipo: "",
   });
 
   const [error, setError] = useState(null);
@@ -25,7 +25,7 @@ const EMEditModal = ({ show, handleClose, emDataToEdit }) => {
   };
 
   const validateFields = () => {
-    if (!emData.nombre || !emData.proveedor || !emData.cantidadDisponible) {
+    if (!emData.placa || !emData.proveedor || !emData.tipo) {
       setError("Por favor, complete todos los campos obligatorios.");
       return false;
     }
@@ -33,15 +33,53 @@ const EMEditModal = ({ show, handleClose, emDataToEdit }) => {
     return true;
   };
 
-  const handleGuardar = () => {
+  const handleGuardar = async () => {
     if (validateFields()) {
-      const emEditado = {
-        nombre: emData.nombre,
-        proveedor: emData.proveedor,
-        cantidadDisponible: parseInt(emData.cantidadDisponible, 10),
+      const tipoMap = {
+        "luces quirúrgicas": 1,
+        ultrasonidos: 2,
+        esterilizadores: 3,
+        desfibriladores: 4,
+        monitores: 5,
+        "respiradores artificiales": 6,
+        electrocardiógrafos: 7,
       };
+
+      const emEditado = {
+        placa: emData.placa,
+        proveedor: emData.proveedor,
+        tipo: tipoMap[emData.tipo],
+        numero: 3,
+      };
+
       console.log("Equipo Médico editado:", emEditado);
-      handleClose();
+
+      const url =
+        "https://hospitecapi.azurewebsites.net/api/equiposmedicos/modificar";
+
+      try {
+        const response = await fetch(url, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(emEditado),
+        });
+
+        if (response.ok) {
+          console.log("Equipo médico modificado exitosamente");
+          handleClose();
+          window.location.reload(); // Recarga la página para reflejar los cambios
+        } else {
+          setError(
+            "Error al modificar el equipo médico: " + response.statusText
+          );
+        }
+      } catch (error) {
+        setError(
+          "Error de red al modificar el equipo médico: " + error.message
+        );
+      }
     }
   };
 
@@ -52,13 +90,13 @@ const EMEditModal = ({ show, handleClose, emDataToEdit }) => {
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Group controlId="nombre">
-            <Form.Label>Nombre</Form.Label>
+          <Form.Group controlId="placa">
+            <Form.Label>Placa</Form.Label>
             <Form.Control
               type="text"
-              name="nombre"
+              name="placa"
               required
-              value={emData.nombre}
+              value={emData.placa}
               onChange={handleChange}
             />
           </Form.Group>
@@ -72,15 +110,26 @@ const EMEditModal = ({ show, handleClose, emDataToEdit }) => {
               onChange={handleChange}
             />
           </Form.Group>
-          <Form.Group controlId="cantidadDisponible">
-            <Form.Label>Cantidad Disponible</Form.Label>
+          <Form.Group controlId="tipo">
+            <Form.Label>Tipo</Form.Label>
             <Form.Control
-              type="number"
-              name="cantidadDisponible"
+              as="select"
+              name="tipo"
               required
-              value={emData.cantidadDisponible}
+              value={emData.tipo}
               onChange={handleChange}
-            />
+            >
+              <option value="">Seleccione un tipo</option>
+              <option value="luces quirúrgicas">Luces quirúrgicas</option>
+              <option value="ultrasonidos">Ultrasonidos</option>
+              <option value="esterilizadores">Esterilizadores</option>
+              <option value="desfibriladores">Desfibriladores</option>
+              <option value="monitores">Monitores</option>
+              <option value="respiradores artificiales">
+                Respiradores artificiales
+              </option>
+              <option value="electrocardiógrafos">Electrocardiógrafos</option>
+            </Form.Control>
           </Form.Group>
         </Form>
         {error && <Alert variant="danger">{error}</Alert>}

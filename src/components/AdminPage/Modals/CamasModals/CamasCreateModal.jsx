@@ -1,15 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
 
 const CamasCreateModal = ({ show, handleClose }) => {
   const [camaData, setCamaData] = useState({
-    numeroCama: "",
-    equipoMedico: "",
     salon: "",
     UCI: false,
   });
-
+  const [salones, setSalones] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchSalones = async () => {
+      try {
+        const response = await fetch(
+          "https://hospitecapi.azurewebsites.net/api/obtenerSalones"
+        );
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+        const data = await response.json();
+        setSalones(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSalones();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -21,7 +41,7 @@ const CamasCreateModal = ({ show, handleClose }) => {
   };
 
   const validateFields = () => {
-    if (!camaData.numeroCama || !camaData.equipoMedico || !camaData.salon) {
+    if (!camaData.salon) {
       setError("Por favor, complete todos los campos obligatorios.");
       return false;
     }
@@ -29,16 +49,35 @@ const CamasCreateModal = ({ show, handleClose }) => {
     return true;
   };
 
-  const handleGuardar = () => {
+  const handleGuardar = async () => {
     if (validateFields()) {
       const nuevaCama = {
-        numeroCama: camaData.numeroCama,
-        equipoMedico: camaData.equipoMedico.split(","),
         salon: camaData.salon,
-        UCI: camaData.UCI,
+        uci: camaData.UCI,
       };
       console.log("Nueva cama:", nuevaCama);
-      handleClose();
+
+      const url = "https://hospitecapi.azurewebsites.net/api/camas/agregar";
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(nuevaCama),
+        });
+
+        if (response.ok) {
+          console.log("Cama agregada exitosamente");
+          handleClose();
+          window.location.reload(); // Recarga la página para reflejar los cambios
+        } else {
+          setError("Error al agregar la cama: " + response.statusText);
+        }
+      } catch (error) {
+        setError("Error de red al agregar la cama: " + error.message);
+      }
     }
   };
 
@@ -49,39 +88,30 @@ const CamasCreateModal = ({ show, handleClose }) => {
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Group controlId="numeroCama">
-            <Form.Label>Número de Cama</Form.Label>
-            <Form.Control
-              type="text"
-              name="numeroCama"
-              required
-              value={camaData.numeroCama}
-              onChange={handleChange}
-            />
-          </Form.Group>
-          <Form.Group controlId="equipoMedico">
-            <Form.Label>Equipo Médico</Form.Label>
-            <Form.Control
-              type="text"
-              name="equipoMedico"
-              required
-              value={camaData.equipoMedico}
-              onChange={handleChange}
-            />
-            <Form.Text className="text-muted">
-              Separar los elementos por comas (,).
-            </Form.Text>
-          </Form.Group>
           <Form.Group controlId="salon">
             <Form.Label>Salón</Form.Label>
             <Form.Control
-              type="text"
+              as="select"
               name="salon"
               required
               value={camaData.salon}
               onChange={handleChange}
-            />
+            >
+              <option value="">Seleccione un salón</option>
+              {loading ? (
+                <option disabled>Cargando...</option>
+              ) : error ? (
+                <option disabled>Error al cargar los salones</option>
+              ) : (
+                salones.map((salon) => (
+                  <option key={salon.numeroSalon} value={salon.numeroSalon}>
+                    {salon.nombreSalon}
+                  </option>
+                ))
+              )}
+            </Form.Control>
           </Form.Group>
+
           <Form.Group controlId="UCI">
             <Form.Check
               type="checkbox"

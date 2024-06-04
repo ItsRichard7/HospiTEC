@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
 
 const HmModal = ({ show, handleClose }) => {
@@ -9,7 +9,30 @@ const HmModal = ({ show, handleClose }) => {
     fecha_procedimiento: "",
   });
 
+  const [procedimientos, setProcedimientos] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProcedimientos = async () => {
+      try {
+        const response = await fetch(
+          "https://hospitecapi.azurewebsites.net/api/procedimientos"
+        );
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+        const data = await response.json();
+        setProcedimientos(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProcedimientos();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,7 +56,7 @@ const HmModal = ({ show, handleClose }) => {
     return true;
   };
 
-  const handleGuardar = () => {
+  const handleGuardar = async () => {
     if (validateFields()) {
       const nuevoHM = {
         cedula: hmData.cedula,
@@ -41,8 +64,33 @@ const HmModal = ({ show, handleClose }) => {
         tratamiento_prescrito: hmData.tratamiento_prescrito,
         fecha_procedimiento: hmData.fecha_procedimiento,
       };
-      console.log("Nuevo Historial médico:", nuevoHM);
-      handleClose();
+
+      try {
+        const response = await fetch(
+          "https://hospitecapi.azurewebsites.net/api/historialmedico",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(nuevoHM),
+          }
+        );
+
+        if (response.ok) {
+          console.log("Historial Médico agregado exitosamente");
+          handleClose();
+          window.location.reload(); // Recarga la página para reflejar los cambios
+        } else {
+          setError(
+            "Error al agregar el historial médico: " + response.statusText
+          );
+        }
+      } catch (error) {
+        setError(
+          "Error de red al agregar el historial médico: " + error.message
+        );
+      }
     }
   };
 
@@ -66,12 +114,25 @@ const HmModal = ({ show, handleClose }) => {
           <Form.Group controlId="procedimiento_realizado">
             <Form.Label>Procedimiento Realizado</Form.Label>
             <Form.Control
-              type="text"
+              as="select"
               name="procedimiento_realizado"
               required
               value={hmData.procedimiento_realizado}
               onChange={handleChange}
-            />
+            >
+              <option value="">Seleccione un procedimiento</option>
+              {loading ? (
+                <option disabled>Cargando...</option>
+              ) : error ? (
+                <option disabled>Error al cargar los procedimientos</option>
+              ) : (
+                procedimientos.map((procedimiento) => (
+                  <option key={procedimiento.id} value={procedimiento.id}>
+                    {procedimiento.nombreProcedimiento}
+                  </option>
+                ))
+              )}
+            </Form.Control>
           </Form.Group>
           <Form.Group controlId="tratamiento_prescrito">
             <Form.Label>Tratamiento Prescrito</Form.Label>

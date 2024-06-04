@@ -4,7 +4,6 @@ import { Modal, Button, Form, Alert } from "react-bootstrap";
 const CamasEditModal = ({ show, handleClose, camaDataToEdit }) => {
   const [camaData, setCamaData] = useState({
     numeroCama: "",
-    equipoMedico: [],
     salon: "",
     UCI: false,
   });
@@ -37,31 +36,8 @@ const CamasEditModal = ({ show, handleClose, camaDataToEdit }) => {
     });
   };
 
-  const handleAddEquipoMedico = () => {
-    setCamaData((prevData) => ({
-      ...prevData,
-      equipoMedico: [...prevData.equipoMedico, ""],
-    }));
-  };
-
-  const handleRemoveEquipoMedico = (index) => {
-    setCamaData((prevData) => {
-      const newEquipoMedico = prevData.equipoMedico.filter(
-        (_, i) => i !== index
-      );
-      return {
-        ...prevData,
-        equipoMedico: newEquipoMedico,
-      };
-    });
-  };
-
   const validateFields = () => {
-    if (
-      !camaData.numeroCama ||
-      !camaData.salon ||
-      camaData.equipoMedico.some((item) => item === "")
-    ) {
+    if (!camaData.numeroCama || !camaData.salon) {
       setError("Por favor, complete todos los campos obligatorios.");
       return false;
     }
@@ -116,26 +92,6 @@ const CamasEditModal = ({ show, handleClose, camaDataToEdit }) => {
               onChange={handleChange}
             />
           </Form.Group>
-          <Form.Label>Equipo Médico</Form.Label>
-          {camaData.equipoMedico.map((item, index) => (
-            <Form.Group controlId={`equipoMedico-${index}`} key={index}>
-              <Form.Control
-                type="text"
-                value={item}
-                onChange={(e) => handleEquipoMedicoChange(e, index)}
-              />
-              <Button
-                variant="danger"
-                onClick={() => handleRemoveEquipoMedico(index)}
-                style={{ marginTop: "5px" }}
-              >
-                Eliminar
-              </Button>
-            </Form.Group>
-          ))}
-          <Button variant="secondary" onClick={handleAddEquipoMedico}>
-            Añadir Equipo Médico
-          </Button>
         </Form>
         {error && <Alert variant="danger">{error}</Alert>}
       </Modal.Body>

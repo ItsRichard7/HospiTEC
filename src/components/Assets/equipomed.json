@@ -1,37 +1,37 @@
 [
     {
-        "nombre": "Luces Quirúrgicas",
+        "tipo": "Luces Quirúrgicas",
         "proveedor": "Proveedor A",
-        "cantidadDisponible": 5
+        "placa": 5
     },
     {
-        "nombre": "Ultrasonidos",
+        "tipo": "Ultrasonidos",
         "proveedor": "Proveedor B",
-        "cantidadDisponible": 10
+        "placa": 10
     },
     {
-        "nombre": "Esterilizadores",
+        "tipo": "Esterilizadores",
         "proveedor": "Proveedor C",
-        "cantidadDisponible": 8
+        "placa": 8
     },
     {
-        "nombre": "Desfibriladores",
+        "tipo": "Desfibriladores",
         "proveedor": "Proveedor D",
-        "cantidadDisponible": 7
+        "placa": 7
     },
     {
-        "nombre": "Monitores",
+        "tipo": "Monitores",
         "proveedor": "Proveedor E",
-        "cantidadDisponible": 12
+        "placa": 12
     },
     {
-        "nombre": "Respiradores Artificiales",
+        "tipo": "Respiradores Artificiales",
         "proveedor": "Proveedor F",
-        "cantidadDisponible": 6
+        "placa": 6
     },
     {
-        "nombre": "Electrocardiógrafos",
+        "tipo": "Electrocardiógrafos",
         "proveedor": "Proveedor G",
-        "cantidadDisponible": 9
+        "placa": 9
     }
 ]

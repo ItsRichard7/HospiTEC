@@ -8,6 +8,7 @@ const PMCreateModal = ({ show, handleClose }) => {
   });
 
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,8 +33,38 @@ const PMCreateModal = ({ show, handleClose }) => {
         nombreProcedimiento: pmData.nombreProcedimiento,
         diasRecuperacion: parseInt(pmData.diasRecuperacion),
       };
-      console.log("Nuevo procedimiento médico:", nuevoPM);
-      handleClose();
+
+      fetch(
+        "https://hospitecapi.azurewebsites.net/api/procedimientos/agregar",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(nuevoPM),
+        }
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Error al guardar el procedimiento médico");
+            window.location.reload();
+          }
+
+          return response.json();
+        })
+        .then((data) => {
+          console.log("Procedimiento médico guardado:", data);
+          setSuccess("Procedimiento médico guardado exitosamente.");
+          handleClose();
+          window.location.reload();
+        })
+        .catch((error) => {
+          window.location.reload();
+          console.error("Error:", error);
+          setError(
+            "Hubo un error al guardar el procedimiento médico. Por favor, intente nuevamente."
+          );
+        });
     }
   };
 
@@ -66,6 +97,7 @@ const PMCreateModal = ({ show, handleClose }) => {
           </Form.Group>
         </Form>
         {error && <Alert variant="danger">{error}</Alert>}
+        {success && <Alert variant="success">{success}</Alert>}
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
