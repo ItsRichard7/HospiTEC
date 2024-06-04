@@ -21,6 +21,9 @@ namespace API.Models
         public DbSet<Patologia> Patologia { get; set; }
         public DbSet<HistorialMedicoDetalle> HistorialMedicoDetalle { get; set; }
         public DbSet<HistorialMedicoModif> HistorialMedicoModif { get; set; }
+        public DbSet<ReservacionUsuario> ReservacionUsuario { get; set; }
+        public DbSet<ReservacionCama> ReservacionCama { get; set; }
+        public DbSet<DisponibilidadResult> DisponibilidadResult { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -36,6 +39,7 @@ namespace API.Models
             modelBuilder.Entity<Patologia>().HasNoKey();
             modelBuilder.Entity<HistorialMedicoDetalle>().HasNoKey();
             modelBuilder.Entity<HistorialMedicoModif>().HasNoKey();
+            modelBuilder.Entity<DisponibilidadResult>().HasNoKey();
 
 
 
@@ -92,6 +96,16 @@ namespace API.Models
             modelBuilder.Entity<HistorialMedicoDetalle>().Property(s => s.procedimiento_realizado).HasColumnName("id_procedimiento");
             modelBuilder.Entity<HistorialMedicoDetalle>().Property(s => s.nombre_procedimiento).HasColumnName("nombre_procedimiento");
             modelBuilder.Entity<HistorialMedicoDetalle>().Property(s => s.tratamiento_prescrito).HasColumnName("tratamiento");
+
+            modelBuilder.Entity<ReservacionUsuario>().Property(s => s.id).HasColumnName("p_id");
+            modelBuilder.Entity<ReservacionUsuario>().Property(s => s.numeroCama).HasColumnName("p_num_cama");
+            modelBuilder.Entity<ReservacionUsuario>().Property(s => s.fechaIngreso).HasColumnName("p_fecha_ingreso");
+            modelBuilder.Entity<ReservacionUsuario>().Property(s => s.fechaSalida).HasColumnName("p_fecha_salida");
+
+            modelBuilder.Entity<ReservacionCama>().Property(s => s.cedula).HasColumnName("p_user_ced");
+            modelBuilder.Entity<ReservacionCama>().Property(s => s.id).HasColumnName("p_id");
+            modelBuilder.Entity<ReservacionCama>().Property(s => s.fechaIngreso).HasColumnName("p_fecha_ingreso");
+            modelBuilder.Entity<ReservacionCama>().Property(s => s.fechaSalida).HasColumnName("p_fecha_salida");
 
         }
     }

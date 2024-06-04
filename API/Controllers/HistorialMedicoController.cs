@@ -30,8 +30,8 @@ namespace API.Controllers
             }
 
             // PUT: api/historialmedico/{id}
-            [HttpPut("{id}")]
-            public async Task<ActionResult> EditarHistorialMedico(int id, [FromBody] HistorialMedicoModif historialMedico)
+            [HttpPut]
+            public async Task<ActionResult> EditarHistorialMedico([FromBody] HistorialMedicoModif historialMedico)
             {
                 var result = await _context.Database.ExecuteSqlRawAsync(
                     "CALL up_editar_historial({0}, {1}, {2}, {3}, {4})",
