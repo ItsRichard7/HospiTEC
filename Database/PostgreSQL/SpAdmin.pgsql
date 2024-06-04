@@ -369,7 +369,6 @@ CALL up_insertar_usuario(
 CREATE OR REPLACE PROCEDURE up_modificar_personal(
     p_cedula NUMERIC(10),
     p_rol_id INTEGER,
-    p_contrasena TEXT,
     p_p_nombre VARCHAR(20),
     p_s_nombre VARCHAR(20),
     p_p_apellido VARCHAR(20),
@@ -386,7 +385,6 @@ AS $$
 BEGIN
     UPDATE usuario
     SET rol_id = p_rol_id,
-        contrasena = p_contrasena,
         p_nombre = p_p_nombre,
         s_nombre = p_s_nombre,
         p_apellido = p_p_apellido,
@@ -408,7 +406,6 @@ $$;
 CALL up_modificar_personal(
      402680964,  -- cedula
      2, -- rol_id
-    'd7a395614eb5f88f595d4ada638948f9',  -- contrasena
     'María',  -- p_nombre
     'Luisa',  -- s_nombre
     'Ávila',  -- p_apellido
