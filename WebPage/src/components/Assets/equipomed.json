@@ -1,0 +1,37 @@
+[
+    {
+        "tipo": "Luces Quirúrgicas",
+        "proveedor": "Proveedor A",
+        "placa": 5
+    },
+    {
+        "tipo": "Ultrasonidos",
+        "proveedor": "Proveedor B",
+        "placa": 10
+    },
+    {
+        "tipo": "Esterilizadores",
+        "proveedor": "Proveedor C",
+        "placa": 8
+    },
+    {
+        "tipo": "Desfibriladores",
+        "proveedor": "Proveedor D",
+        "placa": 7
+    },
+    {
+        "tipo": "Monitores",
+        "proveedor": "Proveedor E",
+        "placa": 12
+    },
+    {
+        "tipo": "Respiradores Artificiales",
+        "proveedor": "Proveedor F",
+        "placa": 6
+    },
+    {
+        "tipo": "Electrocardiógrafos",
+        "proveedor": "Proveedor G",
+        "placa": 9
+    }
+]

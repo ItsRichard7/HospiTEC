@@ -1,0 +1,29 @@
+.wrapper-doc {
+  width: 420px;
+  align-self: center;
+  background-color: rgba(0, 0, 0, 0.55); /* Color oscuro con opacidad del 55% */
+  border: 2px solid rgba(25, 255, 255, 0.2);
+  color: white;
+  border-radius: 10px;
+  padding: 30px 40px;
+  text-align: center;
+  overflow-y: auto; /* Agregar barra de desplazamiento vertical */
+  max-height: 600px; /* Establecer la altura máxima para activar la barra de desplazamiento */
+  margin: 0 auto;
+}
+
+.wrapper-doc h1 {
+  font-size: 36px;
+}
+
+.wrapper-doc h2 {
+  font-size: 18px;
+  margin-top: 5px;
+}
+
+.wrapper-doc .input-box {
+  position: relative;
+  width: 100%;
+  height: 45px;
+  margin: 30px 0;
+}

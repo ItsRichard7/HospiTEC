@@ -1,0 +1,39 @@
+[
+    {
+        "cedula": "6677889900",
+      "procedimiento_realizado": "Cirugía de apendicitis",
+      "fecha_procedimiento": "2024-01-16",
+      "tratamiento_prescrito": "Antibióticos y reposo"
+    },
+    {
+        "cedula": "6677889900",
+      "procedimiento_realizado": "Revisión médica general",
+      "fecha_procedimiento": "2024-03-05",
+      "tratamiento_prescrito": "Vitaminas y dieta equilibrada"
+    },
+    {
+      "cedula": "6677889900",
+      "procedimiento_realizado": "Tratamiento de esguince",
+      "fecha_procedimiento": "2024-04-20",
+      "tratamiento_prescrito": "Fisioterapia y analgésicos"
+    },
+    {
+        "cedula": "2233445566",
+        "procedimiento_realizado": "Extracción de muela",
+        "fecha_procedimiento": "2023-07-23",
+        "tratamiento_prescrito": "Analgésicos y antibióticos"
+    },
+    {
+        "cedula": "2233445566",
+        "procedimiento_realizado": "Chequeo cardiovascular",
+        "fecha_procedimiento": "2023-09-15",
+        "tratamiento_prescrito": "Control de presión arterial y ejercicio"
+    },
+    {
+        "cedula": "2233445566",
+        "procedimiento_realizado": "Tratamiento de alergias",
+        "fecha_procedimiento": "2023-11-10",
+        "tratamiento_prescrito": "Antihistamínicos y evitar alérgenos"
+    }
+
+  ]
