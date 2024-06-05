@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./PatientPage.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Container, Row, Tabs, Tab, Button } from "react-bootstrap";
@@ -20,6 +20,73 @@ export const PatientPage = () => {
   const [historialesMedicos, setHistorialesMedicos] = useState(
     historialesMedicosData || []
   );
+  const [error, setError] = useState(null);
+  const [comentario, setComentario] = useState("");
+
+  useEffect(() => {
+    const fetchCamas = async () => {
+      try {
+        const response = await fetch(
+          "https://hospitecapi.azurewebsites.net/api/camas"
+        );
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+        const data = await response.json();
+        setCamas(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    const fetchHM = async () => {
+      try {
+        const response = await fetch(
+          `https://hospitecapi.azurewebsites.net/api/historialmedico/${usuario.cedula}`
+        );
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const historialMedicoData = await response.json();
+        setHistorialPaciente(historialMedicoData);
+      } catch (error) {
+        console.error("Error al buscar el historial médico:", error);
+        setError(
+          "Error al buscar el historial médico. Por favor, inténtalo de nuevo."
+        );
+      }
+    };
+
+    const fetchSolicitudes = async () => {
+      try {
+        const response = await fetch(
+          `https://hospitecapi.azurewebsites.net/api/reservaciones/usuario/${usuario.cedula}`
+        );
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const historialMedicoData = await response.json();
+        setSolicitudes(historialMedicoData);
+        console.log(solicitudes);
+      } catch (error) {
+        console.error("Error al buscar las solicitudes:", error);
+        setError(
+          "Error al buscar las solicitudes. Por favor, inténtalo de nuevo."
+        );
+      }
+    };
+
+    fetchHM();
+    fetchCamas();
+    fetchSolicitudes();
+  }, []);
+
+  const [historialPaciente, setHistorialPaciente] = useState([]);
+  const [solicitudes, setSolicitudes] = useState([]);
 
   // estados para las evaluaciones
   const [aseoRating, setAseoRating] = useState(0);
@@ -37,15 +104,37 @@ export const PatientPage = () => {
     Navigate("/Cama", { state: { usuario: usuario, cama: camas[idx] } });
   };
 
-  const handleEvaluacion = () => {
+  const handleEvaluacion = async () => {
     const evaluacionData = {
-      cedula: usuario.cedula,
+      id: "", // ID vacío
+      cedPaciente: usuario.cedula,
       aseo: aseoRating,
       trato: tratoRating,
       puntualidad: puntualidadRating,
+      comentarios: comentario,
     };
-    console.log("Evaluación enviada:", evaluacionData);
-    // Aquí puedes enviar el JSON evaluacionData a un servidor o guardarlo donde necesites
+
+    try {
+      const response = await fetch(
+        "https://hospitecapi.azurewebsites.net/EvalServicio/insert",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(evaluacionData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      console.log("Evaluación enviada:", evaluacionData);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error al enviar la evaluación:", error);
+    }
   };
 
   return (
@@ -65,6 +154,7 @@ export const PatientPage = () => {
                   <tr>
                     <th>Número de cama</th>
                     <th>Salón en el que se encuentra</th>
+                    <th>Nombre del Salón</th>
                     <th>UCI</th>
                     <th>Equipo médico con el que cuenta</th>
                     <th>Acciones</th>
@@ -75,11 +165,18 @@ export const PatientPage = () => {
                     <tr key={idx}>
                       <td>{cama.numeroCama}</td>
                       <td>{cama.salon}</td>
-                      <td>{cama.UCI ? "Sí" : "No"}</td>
+                      <td>{cama.nombreSalon}</td>
+                      <td>{cama.uci ? "Sí" : "No"}</td>
                       <td className="expand">
-                        {cama.equipoMedico.map((equipo, i) => (
-                          <div key={i}>{equipo}</div>
-                        ))}
+                        {cama.equipoMedico
+                          ? typeof cama.equipoMedico === "string"
+                            ? cama.equipoMedico
+                                .split(",")
+                                .map((equipo, i) => (
+                                  <div key={i}>{equipo.trim()}</div>
+                                ))
+                            : cama.equipoMedico
+                          : "No tiene"}
                       </td>
                       <td className="fit">
                         <span className="actions">
@@ -90,6 +187,31 @@ export const PatientPage = () => {
                           />
                         </span>
                       </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Tab>
+          <Tab eventKey="tab-4" title="Mis Reservaciones">
+            <h1>Acá pongo las reservaciones</h1>
+            <div className="table-wrapper">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Solicitud</th>
+                    <th>Número de cama</th>
+                    <th>fechaIngreso</th>
+                    <th>fechaSalida</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {solicitudes.map((historial, idx) => (
+                    <tr key={idx}>
+                      <td>{historial.id}</td>
+                      <td>{historial.numeroCama}</td>
+                      <td>{historial.fechaIngreso}</td>
+                      <td className="expand">{historial.fechaSalida}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -107,9 +229,9 @@ export const PatientPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {historialesFiltrados.map((historial, idx) => (
+                  {historialPaciente.map((historial, idx) => (
                     <tr key={idx}>
-                      <td>{historial.procedimiento_realizado}</td>
+                      <td>{historial.nombre_procedimiento}</td>
 
                       <td className="expand">
                         {historial.tratamiento_prescrito}
@@ -123,6 +245,13 @@ export const PatientPage = () => {
           </Tab>
           <Tab eventKey="tab-3" title="Evaluación de mi estadía">
             <div className="text-center">
+              <h3>Comentario</h3>
+              <textarea
+                value={comentario}
+                onChange={(e) => setComentario(e.target.value)}
+                placeholder="Escribe tu comentario aquí"
+                style={{ width: "70%", minHeight: "100px" }} // Ajusta el ancho aquí
+              />
               <h3>Aseo del Hospital</h3>
               <FiveStarRating onRatingChange={setAseoRating} />
 

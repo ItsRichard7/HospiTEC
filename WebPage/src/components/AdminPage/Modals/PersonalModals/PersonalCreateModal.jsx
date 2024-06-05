@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
+import md5 from "md5";
 
 const PersonalCreateModal = ({ show, handleClose }) => {
   const [personalData, setPersonalData] = useState({
@@ -10,7 +11,10 @@ const PersonalCreateModal = ({ show, handleClose }) => {
     sApellido: "",
     cedula: "",
     telefono: "",
-    direccion: "",
+    pais: "",
+    provincia: "",
+    distrito: "",
+    domicilio: "",
     fecha_nacimiento: "",
     fecha_ingreso: "",
     rol: "enfermero",
@@ -34,10 +38,11 @@ const PersonalCreateModal = ({ show, handleClose }) => {
       !personalData.pApellido ||
       !personalData.sApellido ||
       !personalData.cedula ||
-      !personalData.telefono ||
-      !personalData.direccion ||
-      !personalData.fecha_nacimiento ||
-      !personalData.fecha_ingreso
+      !personalData.pais ||
+      !personalData.provincia ||
+      !personalData.distrito ||
+      !personalData.domicilio ||
+      !personalData.fecha_nacimiento
     ) {
       setError("Por favor, complete todos los campos obligatorios.");
       return false;
@@ -46,14 +51,46 @@ const PersonalCreateModal = ({ show, handleClose }) => {
     return true;
   };
 
-  const handleGuardar = () => {
+  const handleGuardar = async () => {
     if (validateFields()) {
       const nuevoPersonal = {
-        ...personalData,
-        rol: personalData.rol.toLowerCase(), // Convertir el rol a minúsculas
+        cedula: parseInt(personalData.cedula, 10),
+        rol: personalData.rol.toLowerCase() === "enfermero" ? 3 : 2, // Asignar 3 si es enfermero, 2 si es doctor
+        contrasena: md5(personalData.contrasena), // Aplicar MD5 a la contraseña
+        pNombre: personalData.pNombre,
+        sNombre: personalData.sNombre,
+        pApellido: personalData.pApellido,
+        sApellido: personalData.sApellido,
+        fecha_nacimiento: new Date(personalData.fecha_nacimiento).toISOString(),
+        pais: personalData.pais,
+        provincia: personalData.provincia,
+        distrito: personalData.distrito,
+        domicilio: personalData.domicilio,
       };
-      console.log("Nuevo personal:", nuevoPersonal);
-      handleClose();
+      console.log(nuevoPersonal);
+
+      try {
+        const response = await fetch(
+          "https://hospitecapi.azurewebsites.net/api/insertarUsuario",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(nuevoPersonal),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Error al guardar el personal");
+        }
+
+        console.log("Nuevo personal guardado:", nuevoPersonal);
+        handleClose();
+        window.location.reload();
+      } catch (error) {
+        setError("Error al guardar el personal: " + error.message);
+      }
     }
   };
 
@@ -122,26 +159,48 @@ const PersonalCreateModal = ({ show, handleClose }) => {
               onChange={handleChange}
             />
           </Form.Group>
-          <Form.Group controlId="telefono">
-            <Form.Label>Teléfono</Form.Label>
-            <Form.Control
-              type="tel"
-              name="telefono"
-              required
-              value={personalData.telefono}
-              onChange={handleChange}
-            />
-          </Form.Group>
-          <Form.Group controlId="direccion">
-            <Form.Label>Dirección</Form.Label>
+
+          <Form.Group controlId="pais">
+            <Form.Label>País</Form.Label>
             <Form.Control
               type="text"
-              name="direccion"
+              name="pais"
               required
-              value={personalData.direccion}
+              value={personalData.pais}
               onChange={handleChange}
             />
           </Form.Group>
+          <Form.Group controlId="provincia">
+            <Form.Label>Provincia</Form.Label>
+            <Form.Control
+              type="text"
+              name="provincia"
+              required
+              value={personalData.provincia}
+              onChange={handleChange}
+            />
+          </Form.Group>
+          <Form.Group controlId="distrito">
+            <Form.Label>Distrito</Form.Label>
+            <Form.Control
+              type="text"
+              name="distrito"
+              required
+              value={personalData.distrito}
+              onChange={handleChange}
+            />
+          </Form.Group>
+          <Form.Group controlId="domicilio">
+            <Form.Label>Domicilio</Form.Label>
+            <Form.Control
+              type="text"
+              name="domicilio"
+              required
+              value={personalData.domicilio}
+              onChange={handleChange}
+            />
+          </Form.Group>
+
           <Form.Group controlId="fecha_nacimiento">
             <Form.Label>Fecha de Nacimiento</Form.Label>
             <Form.Control
@@ -152,16 +211,7 @@ const PersonalCreateModal = ({ show, handleClose }) => {
               onChange={handleChange}
             />
           </Form.Group>
-          <Form.Group controlId="fecha_ingreso">
-            <Form.Label>Fecha de Ingreso</Form.Label>
-            <Form.Control
-              type="date"
-              name="fecha_ingreso"
-              required
-              value={personalData.fecha_ingreso}
-              onChange={handleChange}
-            />
-          </Form.Group>
+
           <Form.Group controlId="rol">
             <Form.Label>Rol</Form.Label>
             <Form.Control
@@ -171,7 +221,6 @@ const PersonalCreateModal = ({ show, handleClose }) => {
               onChange={handleChange}
             >
               <option value="enfermero">Enfermero</option>
-              <option value="administrativo">Administrativo</option>
               <option value="doctor">Doctor</option>
             </Form.Control>
           </Form.Group>

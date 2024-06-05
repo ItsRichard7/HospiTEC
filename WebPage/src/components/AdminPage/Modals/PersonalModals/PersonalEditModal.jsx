@@ -3,14 +3,15 @@ import { Modal, Button, Form, Alert } from "react-bootstrap";
 
 const PersonalEditModal = ({ show, handleClose, personalDataToEdit }) => {
   const [personalData, setPersonalData] = useState({
-    contrasena: "",
     pNombre: "",
     sNombre: "",
     pApellido: "",
     sApellido: "",
     cedula: "",
-    telefono: "",
-    direccion: "",
+    pais: "",
+    provincia: "",
+    distrito: "",
+    domicilio: "",
     fecha_nacimiento: "",
     fecha_ingreso: "",
     rol: "enfermero",
@@ -20,7 +21,31 @@ const PersonalEditModal = ({ show, handleClose, personalDataToEdit }) => {
 
   useEffect(() => {
     if (personalDataToEdit) {
-      setPersonalData(personalDataToEdit);
+      // Formatear fecha de nacimiento
+      const fechaNacimiento = new Date(personalDataToEdit.fecha_nacimiento);
+      const fechaNacimientoFormateada = fechaNacimiento
+        .toISOString()
+        .split("T")[0];
+
+      // Formatear fecha de ingreso
+      const fechaIngreso = new Date(personalDataToEdit.fecha_ingreso);
+      const fechaIngresoFormateada = fechaIngreso.toISOString().split("T")[0];
+
+      setPersonalData((prevData) => ({
+        ...prevData,
+        pNombre: personalDataToEdit.pNombre,
+        sNombre: personalDataToEdit.sNombre,
+        pApellido: personalDataToEdit.pApellido,
+        sApellido: personalDataToEdit.sApellido,
+        cedula: personalDataToEdit.cedula,
+        pais: personalDataToEdit.pais,
+        provincia: personalDataToEdit.provincia,
+        distrito: personalDataToEdit.distrito,
+        domicilio: personalDataToEdit.domicilio,
+        fecha_nacimiento: fechaNacimientoFormateada,
+        fecha_ingreso: fechaIngresoFormateada,
+        rol: personalDataToEdit.rol,
+      }));
     }
   }, [personalDataToEdit]);
 
@@ -34,12 +59,13 @@ const PersonalEditModal = ({ show, handleClose, personalDataToEdit }) => {
 
   const validateFields = () => {
     if (
-      !personalData.contrasena ||
       !personalData.pNombre ||
       !personalData.pApellido ||
       !personalData.cedula ||
-      !personalData.telefono ||
-      !personalData.direccion ||
+      !personalData.pais ||
+      !personalData.provincia ||
+      !personalData.distrito ||
+      !personalData.domicilio ||
       !personalData.fecha_nacimiento ||
       !personalData.fecha_ingreso ||
       !personalData.rol
@@ -51,23 +77,61 @@ const PersonalEditModal = ({ show, handleClose, personalDataToEdit }) => {
     return true;
   };
 
-  const handleGuardar = () => {
+  const handleGuardar = async () => {
     if (validateFields()) {
-      const personalEditado = {
-        contrasena: personalData.contrasena,
-        pNombre: personalData.pNombre,
-        sNombre: personalData.sNombre,
-        pApellido: personalData.pApellido,
-        sApellido: personalData.sApellido,
-        cedula: personalData.cedula,
-        telefono: personalData.telefono,
-        direccion: personalData.direccion,
-        fecha_nacimiento: personalData.fecha_nacimiento,
-        fecha_ingreso: personalData.fecha_ingreso,
-        rol: personalData.rol,
-      };
-      console.log("Personal editado:", personalEditado);
-      handleClose();
+      try {
+        // Asignar el número entero correspondiente al rol seleccionado
+        let rolNumero;
+        if (personalData.rol === "Doctor") {
+          rolNumero = 2;
+        } else if (personalData.rol === "Enfermero") {
+          rolNumero = 3;
+        } else if (personalData.rol === "administrativo") {
+          rolNumero = 1;
+        }
+
+        // Construir el objeto de datos con el número de rol asignado
+        const dataToSend = {
+          cedula: parseInt(personalData.cedula, 10),
+          rol: rolNumero,
+          pNombre: personalData.pNombre,
+          sNombre: personalData.sNombre,
+          pApellido: personalData.pApellido,
+          sApellido: personalData.sApellido,
+          fecha_nacimiento: personalData.fecha_nacimiento,
+          pais: personalData.pais,
+          provincia: personalData.provincia,
+          distrito: personalData.distrito,
+          domicilio: personalData.domicilio,
+          fecha_ingreso: personalData.fecha_ingreso,
+        };
+
+        console.log(dataToSend);
+
+        const response = await fetch(
+          "https://hospitecapi.azurewebsites.net/api/personal/modificar",
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(dataToSend),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const responseData = await response.json();
+        console.log("Personal editado:", responseData);
+        handleClose();
+        window.location.reload();
+      } catch (error) {
+        console.error("Error al editar el personal:", error);
+        setError("Error al editar el personal. Por favor, inténtalo de nuevo.");
+        window.location.reload();
+      }
     }
   };
 
@@ -78,16 +142,6 @@ const PersonalEditModal = ({ show, handleClose, personalDataToEdit }) => {
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Group controlId="contrasena">
-            <Form.Label>Contraseña</Form.Label>
-            <Form.Control
-              type="password"
-              name="contrasena"
-              required
-              value={personalData.contrasena}
-              onChange={handleChange}
-            />
-          </Form.Group>
           <Form.Group controlId="pNombre">
             <Form.Label>Primer Nombre</Form.Label>
             <Form.Control
@@ -134,28 +188,50 @@ const PersonalEditModal = ({ show, handleClose, personalDataToEdit }) => {
               required
               value={personalData.cedula}
               onChange={handleChange}
+              disabled
             />
           </Form.Group>
-          <Form.Group controlId="telefono">
-            <Form.Label>Teléfono</Form.Label>
+          <Form.Group controlId="pais">
+            <Form.Label>País</Form.Label>
             <Form.Control
               type="text"
-              name="telefono"
+              name="pais"
               required
-              value={personalData.telefono}
+              value={personalData.pais}
               onChange={handleChange}
             />
           </Form.Group>
-          <Form.Group controlId="direccion">
-            <Form.Label>Dirección</Form.Label>
+          <Form.Group controlId="provincia">
+            <Form.Label>Provincia</Form.Label>
             <Form.Control
               type="text"
-              name="direccion"
+              name="provincia"
               required
-              value={personalData.direccion}
+              value={personalData.provincia}
               onChange={handleChange}
             />
           </Form.Group>
+          <Form.Group controlId="distrito">
+            <Form.Label>Distrito</Form.Label>
+            <Form.Control
+              type="text"
+              name="distrito"
+              required
+              value={personalData.distrito}
+              onChange={handleChange}
+            />
+          </Form.Group>
+          <Form.Group controlId="domicilio">
+            <Form.Label>Domicilio</Form.Label>
+            <Form.Control
+              type="text"
+              name="domicilio"
+              required
+              value={personalData.domicilio}
+              onChange={handleChange}
+            />
+          </Form.Group>
+
           <Form.Group controlId="fecha_nacimiento">
             <Form.Label>Fecha de Nacimiento</Form.Label>
             <Form.Control
@@ -185,9 +261,9 @@ const PersonalEditModal = ({ show, handleClose, personalDataToEdit }) => {
               value={personalData.rol}
               onChange={handleChange}
             >
-              <option value="enfermero">Enfermero</option>
+              <option value="Enfermero">Enfermero</option>
               <option value="administrativo">Administrativo</option>
-              <option value="doctor">Doctor</option>
+              <option value="Doctor">Doctor</option>
             </Form.Control>
           </Form.Group>
         </Form>

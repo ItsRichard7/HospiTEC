@@ -171,7 +171,7 @@
 }
 
 .progress-bar {
-  background-color: #ff0000;
+  background-color: #ffffff00;
   border-radius: 20px;
   margin-bottom: 20px;
   overflow: hidden;
@@ -183,4 +183,10 @@
   background-color: #ee0000;
   height: 20px;
   width: 0;
+}
+
+.evaluacion-column {
+  width: calc(
+    33.33% - 20px
+  ); /* Ancho igual para las tres columnas, con un espacio de 20px entre ellas */
 }

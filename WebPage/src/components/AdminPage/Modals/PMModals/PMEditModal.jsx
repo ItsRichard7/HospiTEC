@@ -5,6 +5,7 @@ const PMEditModal = ({ show, handleClose, pmDataToEdit }) => {
   const [pmData, setPmData] = useState({
     nombreProcedimiento: "",
     diasRecuperacion: "",
+    id: 0,
   });
 
   const [error, setError] = useState(null);
@@ -32,14 +33,40 @@ const PMEditModal = ({ show, handleClose, pmDataToEdit }) => {
     return true;
   };
 
-  const handleGuardar = () => {
+  const handleGuardar = async () => {
     if (validateFields()) {
       const pmEditado = {
         nombreProcedimiento: pmData.nombreProcedimiento,
         diasRecuperacion: parseInt(pmData.diasRecuperacion, 10),
+        id: pmData.id,
       };
-      console.log("Procedimiento Médico editado:", pmEditado);
-      handleClose();
+
+      const url =
+        "https://hospitecapi.azurewebsites.net/api/procedimientos/modificar";
+
+      try {
+        const response = await fetch(url, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(pmEditado),
+        });
+
+        if (response.ok) {
+          console.log("Procedimiento Médico editado exitosamente");
+          handleClose();
+          window.location.reload(); // Recarga la página para reflejar los cambios
+        } else {
+          setError(
+            "Error al editar el procedimiento médico: " + response.statusText
+          );
+        }
+      } catch (error) {
+        setError(
+          "Error de red al editar el procedimiento médico: " + error.message
+        );
+      }
     }
   };
 

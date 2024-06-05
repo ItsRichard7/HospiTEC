@@ -9,43 +9,76 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import { FaInfoCircle, FaEye } from "react-icons/fa";
 import { LuEyeOff, LuEye } from "react-icons/lu";
 
-// Datos necesarios
-import usuariosData from "../Assets/usuarios.json";
-
 export const RegisterPage = () => {
   const [pNombre, setPNombre] = useState("");
   const [sNombre, setSNombre] = useState("");
   const [pApellido, setPApellido] = useState("");
   const [sApellido, setSApellido] = useState("");
   const [cedula, setCedula] = useState("");
-  const [telefono, setTelefono] = useState("");
-  const [direccion, setDireccion] = useState("");
+  const [contrasena, setContrasena] = useState("");
+  const [pais, setPais] = useState("");
+  const [provincia, setProvincia] = useState("");
+  const [distrito, setDistrito] = useState("");
+  const [domicilio, setDomicilio] = useState("");
   const [fechaNacimiento, setFechaNacimiento] = useState("");
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [mostrarContrasena, setMostrarContrasena] = useState(false);
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+    const fecha_nacimiento = fechaNacimiento;
 
-    // Crear el nuevo usuario
+    const hashedPassword = md5(contrasena);
+
     const newUser = {
       pNombre,
       sNombre,
       pApellido,
       sApellido,
-      cedula,
-      telefono,
-      direccion,
-      fechaNacimiento,
-      rol: "paciente",
-      aprobado: false,
+      cedula: parseInt(cedula),
+      contrasena: hashedPassword,
+      pais,
+      provincia,
+      distrito,
+      domicilio,
+      fecha_nacimiento,
+      rol: 4,
     };
 
-    // Guardar el usuario en el localStorage
-    localStorage.setItem("userData", JSON.stringify(newUser));
-    console.log("Nuevo usuario:", newUser);
-    console.log(localStorage.getItem("userData"));
-    Navigate("/");
+    console.log(newUser);
+
+    try {
+      const response = await fetch(
+        "https://hospitecapi.azurewebsites.net/api/insertarUsuario",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newUser),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const responseData = await response.text(); // obtener como texto
+
+      try {
+        const jsonResponse = JSON.parse(responseData);
+        console.log("Nuevo usuario registrado:", jsonResponse);
+        navigate("/");
+      } catch (e) {
+        console.error("Error al parsear la respuesta:", e);
+        navigate("/");
+        setError("Todo salio bien");
+      }
+    } catch (error) {
+      console.error("Error al registrar el usuario:", error);
+      setError("Error al registrar el usuario. Por favor, inténtalo de nuevo.");
+    }
   };
 
   return (
@@ -101,24 +134,62 @@ export const RegisterPage = () => {
           </div>
           <div className="input-box">
             <input
-              type="number"
-              placeholder="Teléfono"
+              type={mostrarContrasena ? "text" : "password"}
+              placeholder="Contraseña"
               required
-              value={telefono}
-              onChange={(e) => setTelefono(e.target.value)}
+              value={contrasena}
+              onChange={(e) => setContrasena(e.target.value)}
+            />
+            <span
+              title={
+                mostrarContrasena ? "Ocultar contraseña" : "Mostrar contraseña"
+              }
+              onClick={() => setMostrarContrasena(!mostrarContrasena)}
+            >
+              {mostrarContrasena ? (
+                <LuEyeOff className="icon" />
+              ) : (
+                <LuEye className="icon" />
+              )}
+            </span>
+          </div>
+          <div className="input-box">
+            <input
+              type="text"
+              placeholder="País"
+              required
+              value={pais}
+              onChange={(e) => setPais(e.target.value)}
             />
           </div>
           <div className="input-box">
             <input
               type="text"
-              placeholder="Dirección"
+              placeholder="Provincia"
               required
-              value={direccion}
-              onChange={(e) => setDireccion(e.target.value)}
+              value={provincia}
+              onChange={(e) => setProvincia(e.target.value)}
             />
           </div>
           <div className="input-box">
-            <label htmlFor="fechaNacimiento">Fecha de Nacimiento</label>
+            <input
+              type="text"
+              placeholder="Distrito"
+              required
+              value={distrito}
+              onChange={(e) => setDistrito(e.target.value)}
+            />
+          </div>
+          <div className="input-box">
+            <input
+              type="text"
+              placeholder="Domicilio"
+              required
+              value={domicilio}
+              onChange={(e) => setDomicilio(e.target.value)}
+            />
+          </div>
+          <div className="input-box">
             <input
               type="date"
               placeholder="Fecha de Nacimiento"

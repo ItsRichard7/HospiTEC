@@ -6,6 +6,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-image: url(/src/components/Assets/hopetec.png);
 }
 
 .wrapper {

@@ -1,42 +1,71 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./LoginPage.css";
-
-// iconos
 import { GrUserAdmin } from "react-icons/gr";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FaInfoCircle, FaEye } from "react-icons/fa";
 import { LuEyeOff, LuEye } from "react-icons/lu";
-import usuariosData from "../Assets/usuarios.json";
+import md5 from "md5";
 
 export const LoginPage = () => {
   const [cedula, setCedula] = useState("");
   const [contrasena, setContrasena] = useState("");
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const [error, setError] = useState("");
   const [mostrarContrasena, setMostrarContrasena] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const usuarioEncontrado = usuariosData.find(
-      (usuario) =>
-        usuario.cedula === cedula && usuario.contrasena === contrasena
-    );
-    if (usuarioEncontrado) {
-      console.log(usuarioEncontrado);
-      if (usuarioEncontrado.rol === "administrador") {
-        console.log("admin");
-        Navigate("/admin", { state: { usuario: usuarioEncontrado } });
-      } else if (
-        usuarioEncontrado.rol === "doctor" ||
-        usuarioEncontrado.rol === "enfermero"
-      ) {
-        Navigate("/doc", { state: { usuario: usuarioEncontrado } });
-      } else if (usuarioEncontrado.rol === "paciente") {
-        Navigate("/patient", { state: { usuario: usuarioEncontrado } });
+
+    const hashedPassword = md5(contrasena);
+
+    const data = {
+      cedula: parseInt(cedula),
+      contrasena: hashedPassword,
+    };
+
+    try {
+      const response = await fetch(
+        "https://hospitecapi.azurewebsites.net/api/verificarInicioSesion",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      const responseData = await response.json();
+
+      if (responseData.resultado === 1) {
+        // Obtener la información del usuario
+        const usuarioResponse = await fetch(
+          `https://hospitecapi.azurewebsites.net/api/obtenerUsuario/${cedula}`
+        );
+        const usuarioData = await usuarioResponse.json();
+        const usuario = usuarioData[0];
+
+        if (usuario) {
+          // Redireccionar según el rol del usuario
+          if (usuario.rol === 1) {
+            navigate("/admin", { state: { usuario } });
+          } else if (usuario.rol === 2 || usuario.rol === 3) {
+            navigate("/doc", { state: { usuario } });
+          } else if (usuario.rol === 4) {
+            navigate("/patient", { state: { usuario } });
+          }
+        } else {
+          setError("No se pudo obtener la información del usuario.");
+        }
+      } else if (responseData.resultado === 2) {
+        setError("La cédula no existe en la base");
+      } else if (responseData.resultado === 3) {
+        setError("La contraseña es incorrecta");
       }
-    } else {
-      setError("Credenciales incorrectas");
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
+      setError("Error al iniciar sesión. Por favor, inténtalo de nuevo.");
     }
   };
 

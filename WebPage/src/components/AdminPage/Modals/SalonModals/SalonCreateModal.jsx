@@ -3,11 +3,10 @@ import { Modal, Button, Form, Alert } from "react-bootstrap";
 
 const SalonCreateModal = ({ show, handleClose }) => {
   const [salonData, setSalonData] = useState({
-    numeroSalon: "",
     nombreSalon: "",
-    capacidadCamas: "",
+    capacidadCamas: 0,
     tipo: "",
-    piso: "",
+    piso: 0,
   });
 
   const [error, setError] = useState(null);
@@ -22,7 +21,6 @@ const SalonCreateModal = ({ show, handleClose }) => {
 
   const validateFields = () => {
     if (
-      !salonData.numeroSalon ||
       !salonData.nombreSalon ||
       !salonData.capacidadCamas ||
       !salonData.tipo ||
@@ -35,17 +33,44 @@ const SalonCreateModal = ({ show, handleClose }) => {
     return true;
   };
 
-  const handleGuardar = () => {
+  const handleGuardar = async () => {
     if (validateFields()) {
+      const tipoMap = {
+        "medicina general": 1,
+        "medicina de hombres": 2,
+        "medicina de mujeres": 3,
+        "medicina de niños": 4,
+      };
+
       const nuevoSalon = {
-        numeroSalon: salonData.numeroSalon,
         nombreSalon: salonData.nombreSalon,
         capacidadCamas: parseInt(salonData.capacidadCamas),
-        tipo: salonData.tipo,
+        tipo: tipoMap[salonData.tipo], // Mapear el tipo al valor correspondiente
         piso: parseInt(salonData.piso),
       };
       console.log("Nuevo salón:", nuevoSalon);
-      handleClose();
+
+      const url = "https://hospitecapi.azurewebsites.net/api/salones/insertar";
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(nuevoSalon),
+        });
+
+        if (response.ok) {
+          console.log("Salón insertado exitosamente");
+          handleClose();
+          window.location.reload(); // Recarga la página para reflejar los cambios
+        } else {
+          setError("Error al insertar el salón: " + response.statusText);
+        }
+      } catch (error) {
+        setError("Error de red al insertar el salón: " + error.message);
+      }
     }
   };
 
@@ -56,16 +81,6 @@ const SalonCreateModal = ({ show, handleClose }) => {
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Group controlId="numeroSalon">
-            <Form.Label>Número de Salón</Form.Label>
-            <Form.Control
-              type="text"
-              name="numeroSalon"
-              required
-              value={salonData.numeroSalon}
-              onChange={handleChange}
-            />
-          </Form.Group>
           <Form.Group controlId="nombreSalon">
             <Form.Label>Nombre de Salón</Form.Label>
             <Form.Control
@@ -89,12 +104,18 @@ const SalonCreateModal = ({ show, handleClose }) => {
           <Form.Group controlId="tipo">
             <Form.Label>Tipo</Form.Label>
             <Form.Control
-              type="text"
+              as="select"
               name="tipo"
               required
               value={salonData.tipo}
               onChange={handleChange}
-            />
+            >
+              <option value="">Seleccione un tipo</option>
+              <option value="medicina general">Medicina General</option>
+              <option value="medicina de hombres">Medicina de Hombres</option>
+              <option value="medicina de mujeres">Medicina de Mujeres</option>
+              <option value="medicina de niños">Medicina de Niños</option>
+            </Form.Control>
           </Form.Group>
           <Form.Group controlId="piso">
             <Form.Label>Piso</Form.Label>
